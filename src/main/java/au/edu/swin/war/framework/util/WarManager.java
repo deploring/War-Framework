@@ -2,6 +2,7 @@ package main.java.au.edu.swin.war.framework.util;
 
 import main.java.au.edu.swin.war.framework.WarPlayer;
 import main.java.au.edu.swin.war.framework.WarPlugin;
+import main.java.au.edu.swin.war.framework.modules.ItemUtility;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;
@@ -23,7 +24,8 @@ import java.util.UUID;
 public abstract class WarManager {
 
     private WarPlugin plugin; // The WarPlugin instance (for JavaPlugin access)
-    private HashMap<UUID, WarPlayer> warPlayers; // The Key/Value set of WarPlayers
+    private HashMap<UUID, WarPlayer> warPlayers; // The Key/Value set of WarPlayers.
+    private ItemUtility itemutil; // An instance of the item utility.
 
     /**
      * Creates an instance of this class.
@@ -34,6 +36,7 @@ public abstract class WarManager {
     public WarManager(WarPlugin plugin) {
         this.plugin = plugin;
         this.warPlayers = new HashMap<>();
+        this.itemutil = new ItemUtility();
     }
 
     /**
@@ -44,6 +47,17 @@ public abstract class WarManager {
      */
     public WarPlugin plugin() {
         return plugin;
+    }
+
+    /**
+     * Returns an instance of ItemUtility so that
+     * maps, gamemodes, etc. can quickly access functions
+     * that allow ItemStacks to be manipulated.
+     *
+     * @return A running instance of the item utility.
+     */
+    public ItemUtility items() {
+        return itemutil;
     }
 
     /**

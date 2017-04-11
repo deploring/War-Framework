@@ -38,7 +38,7 @@ public abstract class WarMode implements Listener {
     boolean active; // Whether or not this class is active during a match.
     int timeElapsed; // Specifies the number of seconds elapsed during the match.
     Scoreboard score; // Holds the Spigot scoreboard extension that players see.
-    //DreamMap targetedMap = null;
+    WarMap map;
 
     /* HashMaps that must be initialized/freed on a match start/end. */
     protected HashMap<String, WarTeam> teams; // Temporary Key/Value set to hold maps for the match.
@@ -254,7 +254,7 @@ public abstract class WarMode implements Listener {
      * @return The current associated map.
      */
     public WarMap map() {
-        return targetedMap;
+        return map;
     }
 
     /**
