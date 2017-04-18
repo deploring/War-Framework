@@ -19,7 +19,7 @@ import org.bukkit.entity.Player;
  */
 public abstract class WarPlayer {
 
-    private Player player; // The Spigot's player implementation
+    private final Player player; // The Spigot's player implementation
     private WarTeam currentTeam; // The team the player is currently on
     private boolean joined; // Whether or not the player is marked as joined
 

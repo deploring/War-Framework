@@ -40,20 +40,20 @@ import java.util.*;
 public abstract class WarMap implements Listener {
 
     /* Do not interfere with these values! */
-    protected WarManager main; // The WarManager instance. This allows access to all other crucial modules.
-    boolean active = false; // Specified if this map is currently being played.
+    private WarManager main; // The WarManager instance. This allows access to all other crucial modules.
+    private boolean active = false; // Specified if this map is currently being played.
     boolean wasSet = false; // Was this map manually set out of rotation?
 
     /* Team-related data. */
     HashMap<String, Object> attributes; // Custom map attributes can be set here if needed.
-    HashMap<String, WarTeam> teams; // The list of defined teams available in this map.
-    HashMap<String, ArrayList<SerializedLocation>> teamSpawns; // A key/value set defining all team spawns.
-    SerializedLocation specSpawn; // The location at which all spectators will initially spawn.
+    private final HashMap<String, WarTeam> teams; // The list of defined teams available in this map.
+    final HashMap<String, ArrayList<SerializedLocation>> teamSpawns; // A key/value set defining all team spawns.
+    private SerializedLocation specSpawn; // The location at which all spectators will initially spawn.
 
     /* Designation attributes. */
-    UUID[] creators = new UUID[]{}; // An array of map creator UUIDs, if applicable.
-    String mapName; // The name of the map. For example, "Awesome Arena II"!
-    Material[] disabledDrops = new Material[]{}; // A list of disabled drops. One is automatically applied.
+    private UUID[] creators = new UUID[]{}; // An array of map creator UUIDs, if applicable.
+    private String mapName; // The name of the map. For example, "Awesome Arena II"!
+    private Material[] disabledDrops = new Material[]{}; // A list of disabled drops. One is automatically applied.
 
     /**
      * Since this class is intialized through reflections,

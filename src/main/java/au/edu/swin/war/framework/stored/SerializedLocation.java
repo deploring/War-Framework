@@ -25,11 +25,11 @@ import org.bukkit.World;
 public class SerializedLocation {
 
     /* Getters and setters are not required for these variables. */
-    public double x;
-    public double y;
-    public double z;
-    public float yaw;
-    public float pitch;
+    private final double x;
+    private final double y;
+    private final double z;
+    private final float yaw;
+    private final float pitch;
 
     /**
      * Main constructor for this class.
@@ -40,7 +40,7 @@ public class SerializedLocation {
      * @param yaw   Yaw is the player's head rotation. (-90 to 90 degrees)
      * @param pitch Pitch is the player's body rotation. (360 degrees)
      */
-    public SerializedLocation(double x, double y, double z, float yaw, float pitch) {
+    private SerializedLocation(double x, double y, double z, float yaw, float pitch) {
         this.x = x;
         this.y = y;
         this.z = z;

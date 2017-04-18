@@ -3,6 +3,7 @@ package main.java.au.edu.swin.war.framework.game;
 import main.java.au.edu.swin.war.framework.WarPlayer;
 import main.java.au.edu.swin.war.framework.stored.SerializedLocation;
 import main.java.au.edu.swin.war.framework.util.WarManager;
+import main.java.au.edu.swin.war.framework.util.WarMatch;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
@@ -32,19 +33,19 @@ public abstract class WarMode implements Listener {
 
     // !! IMPORTANT !! //
     /* Ensure that these fields are initialized & freed when needed. */
-    BukkitTask runtimeTask; // Global gamemode-specific runtime task.
-    boolean permaDeath; // Specifies that permanent death is enabled.
-    Team spec; // Holds the Spigot team extension for the spectators.
-    boolean active; // Whether or not this class is active during a match.
-    int timeElapsed; // Specifies the number of seconds elapsed during the match.
-    Scoreboard score; // Holds the Spigot scoreboard extension that players see.
-    WarMap map;
+    private BukkitTask runtimeTask; // Global gamemode-specific runtime task.
+    private boolean permaDeath; // Specifies that permanent death is enabled.
+    private Team spec; // Holds the Spigot team extension for the spectators.
+    private boolean active; // Whether or not this class is active during a match.
+    private int timeElapsed; // Specifies the number of seconds elapsed during the match.
+    private Scoreboard score; // Holds the Spigot scoreboard extension that players see.
+    private WarMap map; // The map currently associated with this gamemode.
 
     /* HashMaps that must be initialized/freed on a match start/end. */
-    protected HashMap<String, WarTeam> teams; // Temporary Key/Value set to hold maps for the match.
-    protected HashMap<String, ArrayList<SerializedLocation>> teamSpawns; // Temporary Key/Value set to hold Team spawns.
+    private HashMap<String, WarTeam> teams; // Temporary Key/Value set to hold maps for the match.
+    private HashMap<String, ArrayList<SerializedLocation>> teamSpawns; // Temporary Key/Value set to hold Team spawns.
 
-    protected WarManager main; // The WarManager instance. This allows access to all other crucial modules.
+    private WarManager main; // The WarManager instance. This allows access to all other crucial modules.
 
     /**
      * Since this class is intialized through reflections,
@@ -224,7 +225,7 @@ public abstract class WarMode implements Listener {
      *
      * @see org.bukkit.scheduler.BukkitRunnable;
      */
-    public void incrementTimeElapsed() {
+    private void incrementTimeElapsed() {
         timeElapsed = timeElapsed + 1;
     }
 
@@ -241,7 +242,7 @@ public abstract class WarMode implements Listener {
      *
      * @return The amount of time elapsed.
      */
-    public int getTimeElapsed() {
+    private int getTimeElapsed() {
         return timeElapsed;
     }
 
@@ -253,7 +254,7 @@ public abstract class WarMode implements Listener {
      *
      * @return The current associated map.
      */
-    public WarMap map() {
+    private WarMap map() {
         return map;
     }
 
@@ -271,7 +272,7 @@ public abstract class WarMode implements Listener {
     @SuppressWarnings("unchecked")
     public void activate() {
         main.plugin().getServer().getPluginManager().registerEvents(this, main.plugin()); // Allows the server to listen in on events for this gamemode class.
-        targetedMap = DreamModeMain.getInstance().getCurrentMap();
+        map = main.cache().getCurrentMap();
 
         main.plugin().log("DEBUG: We have activated the match!");
 
@@ -302,43 +303,37 @@ public abstract class WarMode implements Listener {
 
         initialize(); // Initializes everything in the external gamemode class!
 
+        // Defines the plugin executing the timer and the runnable interface. (Spigot)
         runtimeTask = Bukkit.getScheduler().runTaskTimer( // Runs a task timer at a regular interval. (Spigot)
-                main.plugin(), new Runnable() { // Defines the plugin executing the timer and the runnable interface. (Spigot)
-                    public void run() {
-                        /*if (DreamSequence.getInstance().status != DreamSequence.Status.STARTED) {
-                            genTask.cancel();
-                            return;
-                        }*/
-                        incrementTimeElapsed(); // Increments the time elapsed, every second!
-
-                        int timeLeft = getMatchDuration() - getTimeElapsed(); // Calculates the amount of time remaining.
-                        if (timeLeft % 60 == 0 && timeLeft != 0) { // Checks that the time is a remainder of
-                            int minutes = (timeLeft / 60); // Calculates number of minutes remaining.
-                            String s = (minutes == 1 ? "" : "s"); // Should it be 'minute' or 'minutes'?
-
-                            // Broadcasts the amount of minutes remaining.
-                            Bukkit.broadcastMessage("There is " + minutes + " minute" + s + " remaining!");
-
-                            //DreamUtil.countdownTune(2);
-                        } else if (timeLeft == 30) {
-                            // Broadcasts that there is 30 seconds remaining.
-                            Bukkit.broadcastMessage("There is " + timeLeft + " seconds remaining!");
-
-                            //DreamUtil.countdownTune(2);
-                        } else if (timeLeft < 6 && timeLeft > 0) {
-                            String s = (timeLeft == 1 ? "" : "s"); // Calculates number of seconds remaining.
-
-                            // Broadcasts the amount of seconds.
-                            Bukkit.broadcastMessage("There is " + timeLeft + " second" + s + " remaining!");
-
-                            // DreamUtil.countdownTune(2);
-                        }
-
-                        tick(); // Allows the external class to execute certain procedures every second too.
-
-                        if (getTimeElapsed() == getMatchDuration())
-                            onForceEnd(); // If the time is up, force end the match even if the objective is not complete.
+                main.plugin(), () -> {
+                    if (main.match().getStatus() != WarMatch.Status.STARTING) {
+                        // Cancel this if the match is not currently active.
+                        runtimeTask.cancel();
+                        return;
                     }
+                    incrementTimeElapsed(); // Increments the time elapsed, every second!
+
+                    int timeLeft = getMatchDuration() - getTimeElapsed(); // Calculates the amount of time remaining.
+                    if (timeLeft % 60 == 0 && timeLeft != 0) { // Checks that the time is a remainder of
+                        int minutes = (timeLeft / 60); // Calculates number of minutes remaining.
+                        String s = (minutes == 1 ? "" : "s"); // Should it be 'minute' or 'minutes'?
+
+                        // Broadcasts the amount of minutes remaining.
+                        Bukkit.broadcastMessage("There is " + minutes + " minute" + s + " remaining!");
+                    } else if (timeLeft == 30) {
+                        // Broadcasts that there is 30 seconds remaining.
+                        Bukkit.broadcastMessage("There is " + timeLeft + " seconds remaining!");
+                    } else if (timeLeft < 6 && timeLeft > 0) {
+                        String s = (timeLeft == 1 ? "" : "s"); // Calculates number of seconds remaining.
+
+                        // Broadcasts the amount of seconds.
+                        Bukkit.broadcastMessage("There is " + timeLeft + " second" + s + " remaining!");
+                    }
+
+                    tick(); // Allows the external class to execute certain procedures every second too.
+
+                    if (getTimeElapsed() == getMatchDuration())
+                        onForceEnd(); // If the time is up, force end the match even if the objective is not complete.
                 }, 0L, 20L); // Have a 0 tick delay before starting the task, and repeat every 20 ticks.
         // ! IMPORTANT ! A 'tick' is a 20th of a second. Minecraft servers run at 20 ticks per second. (TPS)
     }
@@ -407,7 +402,7 @@ public abstract class WarMode implements Listener {
      *
      * @return Whether the gamemode is active or not.
      */
-    public boolean isActive() {
+    private boolean isActive() {
         return active;
     }
 
@@ -418,7 +413,7 @@ public abstract class WarMode implements Listener {
      *
      * @param active Whether the core is active or not.
      */
-    public void setActive(boolean active) {
+    private void setActive(boolean active) {
         this.active = active;
     }
 
@@ -429,33 +424,32 @@ public abstract class WarMode implements Listener {
      * If the player leaves, disassociate them and call onLeave();
      * If the match is permadeath, do not message the player.
      *
-     * @param dp The player to handle.
+     * @param wp The player to handle.
      */
-    public void entryHandle(WarPlayer dp) {
-        Player pl = dp.getPlayer(); // Returns Spigot's implementation of Player. (Spigot)
+    public void entryHandle(WarPlayer wp) {
+        Player pl = wp.getPlayer(); // Returns Spigot's implementation of Player. (Spigot)
         if (!isActive()) return; // If this gamemode is not active, do not execute anything.
-        if (permaDeath && dp.isJoined()) {
+        if (permaDeath && wp.isJoined()) {
             // Alert the player that permanent death is enabled and cancel the entry.
             pl.sendMessage("You are too late to join!");
-            dp.setJoined(false);
-        } else if (dp.isJoined()) {
+            wp.setJoined(false);
+        } else if (wp.isJoined()) {
             // Assign the player to their team and call onJoin() for the external class.
-            carryOutTeam(dp, getSmallestTeam());
-            onJoin(dp);
+            carryOutTeam(wp, getSmallestTeam());
+            onJoin(wp);
         } else { // If the player did not join, execute a leaving handle.
             if (!permaDeath)
                 pl.sendMessage("You have left the match!"); // Alert the player physically if this is not a permadeath match.
-            WarTeam team = dp.getCurrentTeam(); // Returns the player's associated team for temporary use.
-            dp.setCurrentTeam(null); // Disassociates the player with their team.
+            WarTeam team = wp.getCurrentTeam(); // Returns the player's associated team for temporary use.
+            wp.setCurrentTeam(null); // Disassociates the player with their team.
             pl.teleport(map().getSpectatorSpawn()); // Teleports the player to the map's spectator spawnpoint. (Spigot)
             pl.setGameMode(GameMode.SPECTATOR); // Sets the player to spectator mode. (Spigot)
             team.getBukkitTeam().removePlayer(pl); // Removes the player from their Spigot team. (Spigot)
             spec.addPlayer(pl); // Assigns the player to the spectator team. (Spigot).
-            //DreamUtil.clear(dp);
-            //DreamManager.getInstance().giveSpectatorKit(dp);
-            onLeave(dp); // Calls onLeave() for the external class.
+            main.items().clear(wp); // Clears the player's inventory.
+            main.giveSpectatorKit(wp); // Gives the player a spectator kit.
+            onLeave(wp); // Calls onLeave() for the external class.
         }
-        //dp.updateDisplayName();
     }
 
     /**
@@ -472,13 +466,12 @@ public abstract class WarMode implements Listener {
     private void carryOutTeam(WarPlayer dp, WarTeam team) {
         Player pl = dp.getPlayer(); // Assigns Spigot player implementation.
         pl.sendMessage("You have joined the " + team.getTeamColor() + team.getTeamName()); // Alerts player.
-        pl.teleport(randomSpawnFrom(teamSpawns.get(team.getTeamName())).toLocation(DreamSequence.getInstance().getCurrentWorld(), true)); // Teleports player to random team spawnpoint. (Spigot)
+        pl.teleport(randomSpawnFrom(teamSpawns.get(team.getTeamName())).toLocation(main.match().getCurrentWorld(), true)); // Teleports player to random team spawnpoint. (Spigot)
         pl.setGameMode(GameMode.SURVIVAL); // Sets the player's gamemode to survival. (Spigot)
         dp.setCurrentTeam(team); // Assigns the player's team.
         spec.removePlayer(pl); // Removes the player from the spectator team. (Spigot)
         team.getBukkitTeam().addPlayer(pl); // Assigns the player to the team's Spigot team. (Spigot)
         map().applyInv(dp); // Applies the map's inventory to the player.
-        //dp.updateDisplayName();
     }
 
     /**
@@ -508,7 +501,7 @@ public abstract class WarMode implements Listener {
      *
      * @return The duration of the map.
      */
-    public Integer getMatchDuration() {
+    private Integer getMatchDuration() {
         return (Integer) map().attributes.get("matchDuration");
     }
 
@@ -519,7 +512,7 @@ public abstract class WarMode implements Listener {
      * @param array The list.
      * @return The value.
      */
-    protected SerializedLocation randomSpawnFrom(List<SerializedLocation> array) {
+    private SerializedLocation randomSpawnFrom(List<SerializedLocation> array) {
         Random picker = new Random();
         return array.get(picker.nextInt(array.size()));
     }

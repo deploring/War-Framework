@@ -2,7 +2,9 @@ package main.java.au.edu.swin.war.framework.util;
 
 import main.java.au.edu.swin.war.framework.WarPlayer;
 import main.java.au.edu.swin.war.framework.WarPlugin;
-import main.java.au.edu.swin.war.framework.modules.ItemUtility;
+import main.java.au.edu.swin.war.framework.util.modules.ItemUtility;
+import main.java.au.edu.swin.war.framework.util.modules.StringUtility;
+import main.java.au.edu.swin.war.framework.util.modules.WorldUtility;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;
@@ -23,9 +25,16 @@ import java.util.UUID;
  */
 public abstract class WarManager {
 
-    private WarPlugin plugin; // The WarPlugin instance (for JavaPlugin access)
-    private HashMap<UUID, WarPlayer> warPlayers; // The Key/Value set of WarPlayers.
-    private ItemUtility itemutil; // An instance of the item utility.
+    private final WarPlugin plugin; // The WarPlugin instance (for JavaPlugin access)
+    private final HashMap<UUID, WarPlayer> warPlayers; // The Key/Value set of WarPlayers.
+
+    private final ItemUtility itemutil; // An instance of the item utility.
+    private final StringUtility strutil; // An instance of the string utility.
+    private final WorldUtility wrldutil; // An instance of the world utility.
+
+    // Ensure to include a field containing the match manager!
+    // Ensure to include a field containing the cache!
+    // Extend the abstracted methods provided to do this!
 
     /**
      * Creates an instance of this class.
@@ -37,6 +46,8 @@ public abstract class WarManager {
         this.plugin = plugin;
         this.warPlayers = new HashMap<>();
         this.itemutil = new ItemUtility();
+        this.strutil = new StringUtility(this);
+        this.wrldutil = new WorldUtility(this);
     }
 
     /**
@@ -59,6 +70,50 @@ public abstract class WarManager {
     public ItemUtility items() {
         return itemutil;
     }
+
+    /**
+     * Returns an instance of StringUtility so that
+     * maps, gamemodes, etc. can quickly access functions
+     * that allow Strings to be manipulated.
+     *
+     * @return A running instance of the strings utility.
+     */
+    public StringUtility strings() {
+        return strutil;
+    }
+
+    /**
+     * Returns an instance of WorldUtility so that
+     * maps, gamemodes, etc. can quickly access functions
+     * that allow world files to be manipulated.
+     *
+     * @return A running instance of the world utility.
+     */
+    public WorldUtility world() {
+        return wrldutil;
+    }
+
+    /**
+     * Returns a running instance of the match manager.
+     * This cannot be held in the framework, so you will
+     * need to create your own field and make this function
+     * return the manager.
+     *
+     * @return A running instance of the match manager.
+     * @see WarMatch
+     */
+    public abstract WarMatch match();
+
+    /**
+     * Returns a running instance of the cache manager.
+     * This cannot be held in the framework, so you will
+     * need to create your own field and make this function
+     * return the cache.
+     *
+     * @return A running instance of the cache.
+     * @see WarCache
+     */
+    public abstract WarCache cache();
 
     /**
      * Returns the Key/Value set for all online WarPlayers.
@@ -123,7 +178,7 @@ public abstract class WarManager {
      * @param target The target to query.
      * @return The target's WarPlayer instance.
      */
-    public WarPlayer getWarPlayer(String target) {
+    private WarPlayer getWarPlayer(String target) {
         return warPlayers.get(target);
     }
 }

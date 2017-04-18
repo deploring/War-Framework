@@ -17,11 +17,13 @@ import org.bukkit.scoreboard.Team;
  */
 public final class WarTeam {
 
-    private String teamName;
-    private ChatColor teamColor;
-    private Integer maxTeamSize;
-    private String scoreboardName;
+    /* BEGIN RECORD */
+    private final String teamName;
+    private final ChatColor teamColor;
+    private final Integer maxTeamSize;
+    private final String scoreboardName;
     private Team bukkitTeam;
+    /*  END RECORD  */
 
     /**
      * Creates an instance of this record,
@@ -33,7 +35,7 @@ public final class WarTeam {
      * @param maxTeamSize    The maximum amount of players allowed on this team.
      * @param scoreboardName The team's scoreboard name.
      */
-    public WarTeam(String teamName, ChatColor teamColor, Integer maxTeamSize, String scoreboardName) {
+    private WarTeam(String teamName, ChatColor teamColor, Integer maxTeamSize, String scoreboardName) {
         this.teamName = teamName;
         this.teamColor = teamColor;
         this.maxTeamSize = maxTeamSize;
@@ -102,7 +104,7 @@ public final class WarTeam {
      *
      * @return Maximum team size.
      */
-    public Integer getMaxTeamSize() {
+    private Integer getMaxTeamSize() {
         return maxTeamSize;
     }
 
@@ -111,7 +113,7 @@ public final class WarTeam {
      *
      * @return The unique scoreboard identifier for this Team.
      */
-    public String getScoreboardName() {
+    private String getScoreboardName() {
         return scoreboardName;
     }
 

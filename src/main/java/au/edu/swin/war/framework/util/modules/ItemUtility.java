@@ -1,4 +1,4 @@
-package main.java.au.edu.swin.war.framework.modules;
+package main.java.au.edu.swin.war.framework.util.modules;
 
 import main.java.au.edu.swin.war.framework.WarPlayer;
 import main.java.au.edu.swin.war.framework.game.WarTeam;
@@ -22,7 +22,7 @@ import java.util.ArrayList;
  * This class handles cruicial inventory and
  * item-related prodecures as documented below.
  * <p>
- * Created by Josh on 09/04/2017.
+ * Created by Josh on 18/04/2017.
  *
  * @author s101601828 @ Swin.
  * @version 1.0
@@ -92,7 +92,7 @@ public class ItemUtility {
      * @param name  The ItemStack's name.
      * @param lore  The ItemStack's lore.
      */
-    public ItemStack changeItem(ItemStack stack, String name, Object[] lore) {
+    private ItemStack changeItem(ItemStack stack, String name, Object[] lore) {
         ArrayList<String> loreList = new ArrayList<>();
         for (Object st : lore)
             loreList.add(ChatColor.GOLD + "" + st);
@@ -108,7 +108,7 @@ public class ItemUtility {
      * @param name  The ItemStack's name.
      * @param lore  The ItemStack's lore.
      */
-    public ItemStack changeItem(ItemStack stack, String name, ArrayList<String> lore) {
+    private ItemStack changeItem(ItemStack stack, String name, ArrayList<String> lore) {
         ItemMeta meta = stack.getItemMeta(); // Gets an ItemStack's meta (which holds display names, lore, etc.)
         if (name != null)
             meta.setDisplayName(ChatColor.RED + name); // Set the display name if it isn't null.
@@ -188,7 +188,7 @@ public class ItemUtility {
      * @param color The ChatColor to convert.
      * @return The matching Color.
      */
-    public Color convertChatToDye(ChatColor color) {
+    private Color convertChatToDye(ChatColor color) {
         if (color == ChatColor.AQUA)
             return Color.AQUA;
         else if (color == ChatColor.BLACK)
