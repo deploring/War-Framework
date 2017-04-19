@@ -1,4 +1,4 @@
-package main.java.au.edu.swin.war.framework.util;
+package au.edu.swin.war.framework.util;
 
 /**
  * Any classes that need to access other modules or

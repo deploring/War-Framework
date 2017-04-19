@@ -1,8 +1,8 @@
-package main.java.au.edu.swin.war.framework.util;
+package au.edu.swin.war.framework.util;
 
-import main.java.au.edu.swin.war.framework.game.WarMap;
-import main.java.au.edu.swin.war.framework.game.WarMode;
-import main.java.au.edu.swin.war.framework.game.WarTeam;
+import au.edu.swin.war.framework.game.WarMap;
+import au.edu.swin.war.framework.game.WarMode;
+import au.edu.swin.war.framework.game.WarTeam;
 
 import java.util.HashMap;
 

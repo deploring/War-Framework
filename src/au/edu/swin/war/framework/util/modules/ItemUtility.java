@@ -1,7 +1,7 @@
-package main.java.au.edu.swin.war.framework.util.modules;
+package au.edu.swin.war.framework.util.modules;
 
-import main.java.au.edu.swin.war.framework.WarPlayer;
-import main.java.au.edu.swin.war.framework.game.WarTeam;
+import au.edu.swin.war.framework.WarPlayer;
+import au.edu.swin.war.framework.game.WarTeam;
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
 import org.bukkit.Material;

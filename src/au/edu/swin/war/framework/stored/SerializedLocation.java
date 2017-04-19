@@ -1,4 +1,4 @@
-package main.java.au.edu.swin.war.framework.stored;
+package au.edu.swin.war.framework.stored;
 
 /**
  * This class is fundamentally the same as Spigot's Location

@@ -1,8 +1,8 @@
-package main.java.au.edu.swin.war.framework.util.modules;
+package au.edu.swin.war.framework.util.modules;
 
 
-import main.java.au.edu.swin.war.framework.util.WarManager;
-import main.java.au.edu.swin.war.framework.util.WarModule;
+import au.edu.swin.war.framework.util.WarManager;
+import au.edu.swin.war.framework.util.WarModule;
 import net.minecraft.server.v1_11_R1.WorldServer;
 import org.apache.commons.io.FileUtils;
 import org.bukkit.Bukkit;

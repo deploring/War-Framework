@@ -1,6 +1,6 @@
-package main.java.au.edu.swin.war.framework.util;
+package au.edu.swin.war.framework.util;
 
-import main.java.au.edu.swin.war.framework.game.WarMode;
+import au.edu.swin.war.framework.game.WarMode;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 

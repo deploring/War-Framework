@@ -1,6 +1,6 @@
-package main.java.au.edu.swin.war.framework;
+package au.edu.swin.war.framework;
 
-import main.java.au.edu.swin.war.framework.game.WarTeam;
+import au.edu.swin.war.framework.game.WarTeam;
 import org.bukkit.entity.Player;
 
 /**

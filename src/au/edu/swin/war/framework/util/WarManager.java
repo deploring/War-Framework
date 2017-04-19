@@ -1,10 +1,10 @@
-package main.java.au.edu.swin.war.framework.util;
+package au.edu.swin.war.framework.util;
 
-import main.java.au.edu.swin.war.framework.WarPlayer;
-import main.java.au.edu.swin.war.framework.WarPlugin;
-import main.java.au.edu.swin.war.framework.util.modules.ItemUtility;
-import main.java.au.edu.swin.war.framework.util.modules.StringUtility;
-import main.java.au.edu.swin.war.framework.util.modules.WorldUtility;
+import au.edu.swin.war.framework.WarPlayer;
+import au.edu.swin.war.framework.WarPlugin;
+import au.edu.swin.war.framework.util.modules.ItemUtility;
+import au.edu.swin.war.framework.util.modules.StringUtility;
+import au.edu.swin.war.framework.util.modules.WorldUtility;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;

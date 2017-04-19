@@ -1,9 +1,9 @@
-package main.java.au.edu.swin.war.framework.game;
+package au.edu.swin.war.framework.game;
 
-import main.java.au.edu.swin.war.framework.WarPlayer;
-import main.java.au.edu.swin.war.framework.stored.SerializedLocation;
-import main.java.au.edu.swin.war.framework.util.WarManager;
-import main.java.au.edu.swin.war.framework.util.WarMatch;
+import au.edu.swin.war.framework.WarPlayer;
+import au.edu.swin.war.framework.stored.SerializedLocation;
+import au.edu.swin.war.framework.util.WarManager;
+import au.edu.swin.war.framework.util.WarMatch;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;

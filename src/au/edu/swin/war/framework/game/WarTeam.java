@@ -1,4 +1,4 @@
-package main.java.au.edu.swin.war.framework.game;
+package au.edu.swin.war.framework.game;
 
 import org.bukkit.ChatColor;
 import org.bukkit.scoreboard.Team;

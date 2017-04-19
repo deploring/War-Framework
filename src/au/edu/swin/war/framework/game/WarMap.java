@@ -1,8 +1,8 @@
-package main.java.au.edu.swin.war.framework.game;
+package au.edu.swin.war.framework.game;
 
-import main.java.au.edu.swin.war.framework.WarPlayer;
-import main.java.au.edu.swin.war.framework.stored.SerializedLocation;
-import main.java.au.edu.swin.war.framework.util.WarManager;
+import au.edu.swin.war.framework.WarPlayer;
+import au.edu.swin.war.framework.stored.SerializedLocation;
+import au.edu.swin.war.framework.util.WarManager;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Hanging;
@@ -62,7 +62,7 @@ public abstract class WarMap implements Listener {
      * To work around this, init() is called after the
      * class has actually been initialized to set values.
      *
-     * @see main.java.au.edu.swin.war.framework.game.WarMode
+     * @see au.edu.swin.war.framework.game.WarMode
      */
     public WarMap() {
         /* Initialize things that need to be ready for the configuration. */
@@ -94,7 +94,7 @@ public abstract class WarMap implements Listener {
      * You only need to call this ONCE.
      *
      * @param main The WarManager instance.
-     * @see main.java.au.edu.swin.war.framework.game.WarMode
+     * @see au.edu.swin.war.framework.game.WarMode
      */
     public void init(WarManager main) {
         this.main = main;

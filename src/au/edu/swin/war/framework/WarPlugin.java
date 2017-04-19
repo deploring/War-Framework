@@ -1,7 +1,7 @@
-package main.java.au.edu.swin.war.framework;
+package au.edu.swin.war.framework;
 
 import com.sk89q.minecraft.util.commands.CommandsManager;
-import main.java.au.edu.swin.war.framework.util.WarManager;
+import au.edu.swin.war.framework.util.WarManager;
 import org.bukkit.command.CommandSender;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;

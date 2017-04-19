@@ -1,4 +1,4 @@
-package main.java.au.edu.swin.war.framework.stored;
+package au.edu.swin.war.framework.stored;
 
 /**
  * This interface adds an extra layer of selection when
