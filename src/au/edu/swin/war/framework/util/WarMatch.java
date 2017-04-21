@@ -34,7 +34,7 @@ public abstract class WarMatch extends WarModule {
     private String currentMap; // Holds the current map being played, if any.
     private long roundID; // A unique, random 5-digit number for the Minecraft world name.
     public int rotationPoint; // Holds the point at which the rotation is at.
-    private List<String> rotationList; // Holds a list of map names that are on the rotation.
+    protected List<String> rotationList; // Holds a list of map names that are on the rotation.
 
     /**
      * Constructor of the War Match manager.
@@ -116,6 +116,17 @@ public abstract class WarMatch extends WarModule {
     }
 
     /**
+     * Sets the current map playing, by name.
+     * This does not set the running instance,
+     * but the function that does uses this variable.
+     *
+     * @param currentMap The current map's name.
+     */
+    protected void setCurrentMap(String currentMap) {
+        this.currentMap = currentMap;
+    }
+
+    /**
      * Returns the currently active gamemode.
      * This returns a running instance of the mode.
      *
@@ -123,6 +134,16 @@ public abstract class WarMatch extends WarModule {
      */
     public WarMode getCurrentMode() {
         return currentMode;
+    }
+
+    /**
+     * Sets the current gamemode playing by running instance.
+     * Once a vote has been completed, it should be set using this.
+     *
+     * @param currentMode The gamemode.
+     */
+    public void setCurrentMode(WarMode currentMode) {
+        this.currentMode = currentMode;
     }
 
     /**
@@ -205,6 +226,7 @@ public abstract class WarMatch extends WarModule {
      * The NONE status is used when no round has been established.
      */
     public enum Status {
+        VOTING,
         STARTING,
         PLAYING,
         CYCLE,

@@ -42,14 +42,14 @@ public abstract class WarCache extends WarModule {
      * In the external program, gamemodes should be detected via
      * reflections, instantiated, and put in the gamemodes array.
      */
-    abstract void loadGamemodes();
+    public abstract void loadGamemodes();
 
     /**
      * This procedure should load any maps classes created.
      * In the external program, maps should be detected via
      * reflections or instantiated, and put in the maps array.
      */
-    abstract void loadMaps();
+    public abstract void loadMaps();
 
     /**
      * Returns the current map playing.

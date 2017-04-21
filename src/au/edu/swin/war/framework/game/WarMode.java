@@ -45,7 +45,7 @@ public abstract class WarMode implements Listener {
     private HashMap<String, WarTeam> teams; // Temporary Key/Value set to hold maps for the match.
     private HashMap<String, ArrayList<SerializedLocation>> teamSpawns; // Temporary Key/Value set to hold Team spawns.
 
-    private WarManager main; // The WarManager instance. This allows access to all other crucial modules.
+    protected WarManager main; // The WarManager instance. This allows access to all other crucial modules.
 
     /**
      * Since this class is intialized through reflections,
@@ -254,7 +254,7 @@ public abstract class WarMode implements Listener {
      *
      * @return The current associated map.
      */
-    private WarMap map() {
+    protected WarMap map() {
         return map;
     }
 
@@ -512,7 +512,7 @@ public abstract class WarMode implements Listener {
      * @param array The list.
      * @return The value.
      */
-    private SerializedLocation randomSpawnFrom(List<SerializedLocation> array) {
+    protected SerializedLocation randomSpawnFrom(List<SerializedLocation> array) {
         Random picker = new Random();
         return array.get(picker.nextInt(array.size()));
     }

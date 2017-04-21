@@ -40,7 +40,7 @@ import java.util.*;
 public abstract class WarMap implements Listener {
 
     /* Do not interfere with these values! */
-    private WarManager main; // The WarManager instance. This allows access to all other crucial modules.
+    protected WarManager main; // The WarManager instance. This allows access to all other crucial modules.
     private boolean active = false; // Specified if this map is currently being played.
     boolean wasSet = false; // Was this map manually set out of rotation?
 
@@ -48,7 +48,7 @@ public abstract class WarMap implements Listener {
     HashMap<String, Object> attributes; // Custom map attributes can be set here if needed.
     private final HashMap<String, WarTeam> teams; // The list of defined teams available in this map.
     final HashMap<String, ArrayList<SerializedLocation>> teamSpawns; // A key/value set defining all team spawns.
-    private SerializedLocation specSpawn; // The location at which all spectators will initially spawn.
+    protected SerializedLocation specSpawn; // The location at which all spectators will initially spawn.
 
     /* Designation attributes. */
     private UUID[] creators = new UUID[]{}; // An array of map creator UUIDs, if applicable.
@@ -138,6 +138,16 @@ public abstract class WarMap implements Listener {
     }
 
     /**
+     * If your configuration, as stated above, requires map-specific
+     * instantiations, you should also override this procedure to reset
+     * those instantiations at the end of a match.
+     * <p>
+     * An example usage of this procedure would be to reset variables
+     */
+    public void reset() {
+    }
+
+    /**
      * Applies a player's inventory then updates it.
      * <p>
      * This is the procedure your actual program should
@@ -159,7 +169,7 @@ public abstract class WarMap implements Listener {
      *
      * @param target The player to apply.
      */
-    protected abstract void applyInventory(WarPlayer target);
+    public abstract void applyInventory(WarPlayer target);
 
     /**
      * Quick procedure to set both the block placing and breaking rules.
