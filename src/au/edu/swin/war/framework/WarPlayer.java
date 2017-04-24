@@ -1,6 +1,7 @@
 package au.edu.swin.war.framework;
 
 import au.edu.swin.war.framework.game.WarTeam;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 /**
@@ -17,7 +18,7 @@ import org.bukkit.entity.Player;
  * Created by Josh on 20/03/2017.
  * @since 1.0
  */
-public abstract class WarPlayer {
+public final class WarPlayer {
 
     private final Player player; // The Spigot's player implementation
     private WarTeam currentTeam; // The team the player is currently on
@@ -80,6 +81,31 @@ public abstract class WarPlayer {
      */
     public Player getPlayer() {
         return player;
+    }
+
+    /**
+     * @param message The message to send to the player.
+     * @see Player#sendMessage(String)
+     */
+    public void sendMessage(String message) {
+        getPlayer().sendMessage(message);
+    }
+
+    /**
+     * @return The player's in-game name.
+     * @see Player#getName()
+     */
+    public String getName() {
+        return getPlayer().getName();
+    }
+
+    /**
+     * Returns thei player's IGN colored with their team color.
+     *
+     * @return The colored player name.
+     */
+    public String getTeamName() {
+        return getCurrentTeam().getTeamColor() + getName() + ChatColor.WHITE;
     }
 
     /**

@@ -40,7 +40,7 @@ public class SerializedLocation {
      * @param yaw   Yaw is the player's head rotation. (-90 to 90 degrees)
      * @param pitch Pitch is the player's body rotation. (360 degrees)
      */
-    private SerializedLocation(double x, double y, double z, float yaw, float pitch) {
+    public SerializedLocation(double x, double y, double z, float yaw, float pitch) {
         this.x = x;
         this.y = y;
         this.z = z;

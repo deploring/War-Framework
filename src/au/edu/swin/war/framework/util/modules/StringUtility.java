@@ -41,22 +41,21 @@ public class StringUtility extends WarModule {
      * @param array An array of words.
      * @return A sentence.
      */
-    public String sentenceFormat(List<?> array, ChatColor c) {
+    public String sentenceFormat(List<?> array) {
         if (array.size() == 0) return "None";
-        String format = "";
+        StringBuilder format = new StringBuilder();
         if (array.size() == 1) return array.get(0).toString();
         int i = 1;
         while (i <= array.size()) {
-            if (i == array.size()) {
-                format = format + c + " and " + array.get(i - 1);
-            } else if (i == 1) {
-                format = array.get(0).toString();
-            } else {
-                format = format + c + ", " + array.get(i - 1);
-            }
+            if (i == array.size())
+                format.append(ChatColor.RESET).append(" and ").append(array.get(i - 1).toString());
+            else if (i == 1)
+                format = new StringBuilder(array.get(0).toString());
+            else
+                format.append(", ").append(array.get(i - 1).toString());
             i++;
         }
-        return format;
+        return format.toString();
     }
 
     /**

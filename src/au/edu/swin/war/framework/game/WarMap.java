@@ -70,6 +70,7 @@ public abstract class WarMap implements Listener {
         teamSpawns = new HashMap<>(); // The same as above applies to the spawns. Please clear instead of nulling.
 
         /* Here are some default values which can be modified by extended configurations. */
+        attributes = new HashMap<>(); // Initialise the key/value set first!!
         attributes.put("allDamage", true); // allDamage allows players to take physical PvP damage;
         attributes.put("blockBreak", true); // blockBreak allows players to break blocks;
         attributes.put("blockPlace", true); // blockPlace allows players to place blocks;
@@ -98,6 +99,8 @@ public abstract class WarMap implements Listener {
      */
     public void init(WarManager main) {
         this.main = main;
+        readyAttributes(); // Ready attributes.
+        readySpawns(); // Ready spawns.
     }
 
     /**
@@ -172,12 +175,26 @@ public abstract class WarMap implements Listener {
     public abstract void applyInventory(WarPlayer target);
 
     /**
+     * Returns the key/value set of attributes for this map.
+     * Attributes can contain anything: gamemode-specific
+     * attributes, map-specific attributes, etc.
+     * <p>
+     * A gamemode-specific attribute can be the KoTH flag.
+     * A map-specific attribute could be a temporary point system.
+     *
+     * @return The map's attributes.
+     */
+    public HashMap<String, Object> attr() {
+        return attributes;
+    }
+
+    /**
      * Quick procedure to set both the block placing and breaking rules.
      *
      * @param blockBreak Whether block breaking is allowed.
      * @param blockPlace Whether block placing is allowed.
      */
-    public void setAllowBuild(boolean blockBreak, boolean blockPlace) {
+    protected void setAllowBuild(boolean blockBreak, boolean blockPlace) {
         attributes.put("blockBreak", blockBreak);
         attributes.put("blockPlace", blockPlace);
     }
@@ -269,7 +286,7 @@ public abstract class WarMap implements Listener {
      *
      * @param spectatorSpawn The spectator spawn.
      */
-    public void setSpectatorSpawn(SerializedLocation spectatorSpawn) {
+    protected void setSpectatorSpawn(SerializedLocation spectatorSpawn) {
         this.specSpawn = spectatorSpawn;
     }
 
@@ -279,7 +296,7 @@ public abstract class WarMap implements Listener {
      *
      * @param team The team to register.
      */
-    public void registerTeam(WarTeam team) {
+    protected void registerTeam(WarTeam team) {
         if (team == null) {
             main.plugin().log("We failed to load the team as it was null!");
             return;
@@ -317,9 +334,9 @@ public abstract class WarMap implements Listener {
      * @param team  The team to add the spawn to.
      * @param spawn The team's spawn.
      */
-    public void addTeamSpawn(WarTeam team, SerializedLocation spawn) {
+    protected void addTeamSpawn(WarTeam team, SerializedLocation spawn) {
         if (!teamSpawns.containsKey(team.toString()))
-            teamSpawns.put(team.toString(), new ArrayList<SerializedLocation>()); // Initialize the array list first!
+            teamSpawns.put(team.toString(), new ArrayList<>()); // Initialize the array list first!
         teamSpawns.get(team.toString()).add(spawn); // Add the team spawn to the team's spawn list.
     }
 

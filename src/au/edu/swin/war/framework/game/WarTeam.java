@@ -157,4 +157,13 @@ public final class WarTeam {
     public String toString() {
         return this.getTeamName();
     }
+
+    /**
+     * Returns a colored team name string.
+     *
+     * @return The colored team name.
+     */
+    public String getDisplayName() {
+        return getTeamColor() + getTeamName() + ChatColor.WHITE;
+    }
 }

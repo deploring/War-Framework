@@ -34,7 +34,7 @@ public abstract class WarMatch extends WarModule {
     private String currentMap; // Holds the current map being played, if any.
     private long roundID; // A unique, random 5-digit number for the Minecraft world name.
     public int rotationPoint; // Holds the point at which the rotation is at.
-    protected List<String> rotationList; // Holds a list of map names that are on the rotation.
+    private List<String> rotationList; // Holds a list of map names that are on the rotation.
 
     /**
      * Constructor of the War Match manager.
@@ -50,9 +50,8 @@ public abstract class WarMatch extends WarModule {
         currentMap = null;
 
         //Set up rotation list.
-        try (Stream<String> stream = Files.lines(Paths.get(main().plugin().getDataFolder() + File.separator + "rotation.yml"))) {
+        try (Stream<String> stream = Files.lines(Paths.get(main().plugin().getDataFolder() + File.separator + "rotation"))) {
             rotationList = new ArrayList<>();
-            stream.forEachOrdered(main().plugin()::log); // Debug.
             stream.forEachOrdered(rotationList::add); // For each line read, add it to the list.
         } catch (IOException e) {
             e.printStackTrace();
@@ -67,7 +66,7 @@ public abstract class WarMatch extends WarModule {
      *
      * @return Round ID.
      */
-    public String getRoundID() {
+    private String getRoundID() {
         return roundID + "";
     }
 
@@ -87,7 +86,7 @@ public abstract class WarMatch extends WarModule {
      *
      * @param roundID New round ID.
      */
-    public void setRoundID(long roundID) {
+    protected void setRoundID(long roundID) {
         this.roundID = roundID;
     }
 
@@ -111,8 +110,24 @@ public abstract class WarMatch extends WarModule {
      *
      * @return The current map's name.
      */
-    public String getCurrentMap() {
+    protected String getCurrentMap() {
         return currentMap;
+    }
+
+    /**
+     * Returns the map that was previously played.
+     * This is used when the previous map needs to
+     * be known.
+     * <p>
+     * When a player connects, the previous map needs
+     * to be known. If the match is cycling or under
+     * a vote, players are still in the previous world
+     * even though the new world has been assigned.
+     *
+     * @return The previous map played.
+     */
+    public String getPreviousMap() {
+        return cyclePrevMap;
     }
 
     /**
@@ -124,6 +139,17 @@ public abstract class WarMatch extends WarModule {
      */
     protected void setCurrentMap(String currentMap) {
         this.currentMap = currentMap;
+    }
+
+    /**
+     * Sets the previous map played, by name.
+     * This should be used to set the previous
+     * map for checks when needed.
+     *
+     * @param cyclePrevMap The previous map's name.
+     */
+    protected void setPreviousMap(String cyclePrevMap) {
+        this.cyclePrevMap = cyclePrevMap;
     }
 
     /**
@@ -142,7 +168,7 @@ public abstract class WarMatch extends WarModule {
      *
      * @param currentMode The gamemode.
      */
-    public void setCurrentMode(WarMode currentMode) {
+    protected void setCurrentMode(WarMode currentMode) {
         this.currentMode = currentMode;
     }
 
@@ -160,8 +186,18 @@ public abstract class WarMatch extends WarModule {
      *
      * @param status The new match state.
      */
-    public void setStatus(Status status) {
+    protected void setStatus(Status status) {
         this.status = status;
+    }
+
+    /**
+     * Returns the currently loaded rotation list.
+     * Used to display to a player who requests it.
+     *
+     * @return The rotation list.
+     */
+    public List<String> getRotationList() {
+        return rotationList;
     }
 
     /**

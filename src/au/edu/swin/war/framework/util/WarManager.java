@@ -5,7 +5,6 @@ import au.edu.swin.war.framework.WarPlugin;
 import au.edu.swin.war.framework.util.modules.ItemUtility;
 import au.edu.swin.war.framework.util.modules.StringUtility;
 import au.edu.swin.war.framework.util.modules.WorldUtility;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;
@@ -139,7 +138,7 @@ public abstract class WarManager {
      * @param target The target to base the WarPlayer object on.
      * @see WarPlayer;
      */
-    public abstract void craftWarPlayer(Player target);
+    public abstract WarPlayer craftWarPlayer(Player target);
 
     /**
      * When called, this should clear a player's inventory
@@ -156,8 +155,8 @@ public abstract class WarManager {
      *
      * @param target The WarPlayer object to destroy in the HashMap.
      */
-    public void destroyWarPlayer(String target) {
-        warPlayers.remove(Bukkit.getOfflinePlayer(target).getUniqueId());
+    public void destroyWarPlayer(UUID target) {
+        warPlayers.remove(target);
     }
 
     /**
@@ -169,6 +168,7 @@ public abstract class WarManager {
      * @return The target's WarPlayer instance.
      */
     public WarPlayer getWarPlayer(Player target) {
+        if (target == null) return null;
         return getWarPlayer(target.getUniqueId());
     }
 

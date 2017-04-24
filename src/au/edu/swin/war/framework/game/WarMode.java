@@ -81,6 +81,14 @@ public abstract class WarMode implements Listener {
     public abstract void reset();
 
     /**
+     * Possible required procedure in your Gamemode extension.
+     * Configure this procedure to reset everything that needs
+     * to be fresh for when the gamemode is activated once
+     * again. i.e. Statistics.
+     */
+    public abstract void resetCommon();
+
+    /**
      * ! IMPORTANT !
      * ! DO NOT CONFUSE THIS WITH INIT()!
      * <p>
@@ -93,6 +101,15 @@ public abstract class WarMode implements Listener {
      * the specific gamemode, such as the TDM scores being set to 0.
      */
     public abstract void initialize();
+
+    /**
+     * This procedure is very similar to initialize().
+     * This should be extended in your Gamemode class
+     * to reset local, common variables in it.
+     * <p>
+     * i.e. Statistics counters
+     */
+    public abstract void initializeCommon();
 
     /**
      * This function simply makes a call to the gamemode
@@ -135,7 +152,7 @@ public abstract class WarMode implements Listener {
      * <p>
      * You wouldn't say an TDM or a FFA, would you?
      *
-     * @return The correct grammar of the DreamMode.
+     * @return The correct grammar of the WarMode.
      */
     public abstract String getGrammar();
 
@@ -144,14 +161,30 @@ public abstract class WarMode implements Listener {
      * You must configure this yourself in an external gamemode class.
      * <p>
      * This procedure is automatically called when a player dies.
+     * onDeath() is called when there is no killer repsonsible.
      *
      * @param killed The player who died.
-     * @param killer The player's killer, if any.
+     * @param killer The player's killer.
      * @see org.bukkit.event.entity.PlayerDeathEvent below.
      * <p>
      * An example of this procedure would be to credit the killer's team 1 point in TDM.
      */
     public abstract void onKill(WarPlayer killed, WarPlayer killer);
+
+    /**
+     * A procedure that is run when a player dies.
+     * This is different to onKill, because no player
+     * was responsible for the player's death.
+     * You must configure this yourself in an external gamemode class.
+     * <p>
+     * This procedure is automatically called when a player dies.
+     *
+     * @param killed The player who died.
+     * @see org.bukkit.event.entity.PlayerDeathEvent below.
+     * <p>
+     * An example of this procedure would be to credit the killer's team 1 point in TDM.
+     */
+    public abstract void onDeath(WarPlayer killed);
 
     /**
      * Called when a player leaves.
@@ -181,16 +214,32 @@ public abstract class WarMode implements Listener {
     public abstract void onJoin(WarPlayer joined);
 
     /**
-     * A function that is run when the match is ended forcibly.
-     * This is not an essential function in gamemode management,
-     * but acts as more of a debug if an operator wants to end a
-     * match early to perhaps test cycling or other maps loaded.
+     * A function that is run when the match is ended.
+     * This is an essential function in gamemode management.
+     * It must be called when the objective is fulfilled or
+     * if an operator decides to end the match with a command.
      * <p>
-     * Once again, please configure this function if you are going to use it.
-     *
-     * @return Whether or not the match was able to be safely ended.
+     * This calls decideWinner(), so any gamemode-specific
+     * conclusion logic should be done there, such as broadcasting
+     * the winning team or player and the results.
      */
-    public abstract boolean onForceEnd();
+    public void onEnd() {
+        runtimeTask.cancel();
+        decideWinner();
+        finish();
+    }
+
+    /**
+     * A function that was briefly explained in onEnd().
+     * Any gamemode-specific conclusion logic should be
+     * done here, such as broadcasting the winning team
+     * or player and the results.
+     * <p>
+     * i.e. in Team Death Match
+     * -> Broadcast the team(s) with the most points
+     * -> Broadcast the final results of each team
+     */
+    protected abstract void decideWinner();
 
     /**
      * Returns the gamemode's loaded teams, if any.
@@ -211,11 +260,11 @@ public abstract class WarMode implements Listener {
      * i.e. time running out in TDM,
      * i.e. reaching score cap in FFA, etc.
      */
-    public void finish() {
+    private void finish() {
         setActive(false); // Sets the gamemode instance to inactive.
         if (teamSpawns != null)
             teamSpawns.clear(); // CLEAR the Key/Value set, do not free it.
-        //DreamSequence.getInstance().cycle(s());
+        main.match().matchEnd();
     }
 
     /**
@@ -226,14 +275,14 @@ public abstract class WarMode implements Listener {
      * @see org.bukkit.scheduler.BukkitRunnable;
      */
     private void incrementTimeElapsed() {
-        timeElapsed = timeElapsed + 1;
+        timeElapsed += 1;
     }
 
     /**
      * Sets -specifically- the amount of time elapsed
      * in the match. Mainly for debugging purposes.
      */
-    public void setTimeElapsed(int timeElapsed) {
+    protected void setTimeElapsed(int timeElapsed) {
         this.timeElapsed = timeElapsed;
     }
 
@@ -242,7 +291,7 @@ public abstract class WarMode implements Listener {
      *
      * @return The amount of time elapsed.
      */
-    private int getTimeElapsed() {
+    protected int getTimeElapsed() {
         return timeElapsed;
     }
 
@@ -274,8 +323,6 @@ public abstract class WarMode implements Listener {
         main.plugin().getServer().getPluginManager().registerEvents(this, main.plugin()); // Allows the server to listen in on events for this gamemode class.
         map = main.cache().getCurrentMap();
 
-        main.plugin().log("DEBUG: We have activated the match!");
-
         for (WarTeam team : map().getTeams())
             // Copies every WarTeam defined in the map over to the gamemode!
             teams.put(team.getTeamName(), team.clone());
@@ -284,6 +331,7 @@ public abstract class WarMode implements Listener {
         teamSpawns = (HashMap<String, ArrayList<SerializedLocation>>) map().teamSpawns.clone();
 
         setActive(true); // Sets this gamemode as active and will be recognised as so by the program.
+        score = main.plugin().getServer().getScoreboardManager().getNewScoreboard(); // Create a new scoreboard. (Spigot)
 
         for (WarTeam team : teams.values()) {
             Team lTeam = score.registerNewTeam(team.getTeamName()); // Creates a Spigot Team instance for this team.
@@ -301,12 +349,13 @@ public abstract class WarMode implements Listener {
         for (WarPlayer wp : main.getWarPlayers().values())
             spec.addPlayer(wp.getPlayer()); // Adds every player to the spectator team by default. (Spigot)
 
+        initializeCommon(); // Initializes common values in the extended gamemode class.
         initialize(); // Initializes everything in the external gamemode class!
 
         // Defines the plugin executing the timer and the runnable interface. (Spigot)
         runtimeTask = Bukkit.getScheduler().runTaskTimer( // Runs a task timer at a regular interval. (Spigot)
                 main.plugin(), () -> {
-                    if (main.match().getStatus() != WarMatch.Status.STARTING) {
+                    if (main.match().getStatus() != WarMatch.Status.PLAYING) {
                         // Cancel this if the match is not currently active.
                         runtimeTask.cancel();
                         return;
@@ -333,7 +382,7 @@ public abstract class WarMode implements Listener {
                     tick(); // Allows the external class to execute certain procedures every second too.
 
                     if (getTimeElapsed() == getMatchDuration())
-                        onForceEnd(); // If the time is up, force end the match even if the objective is not complete.
+                        onEnd(); // If the time is up, end the match even if the objective is not complete.
                 }, 0L, 20L); // Have a 0 tick delay before starting the task, and repeat every 20 ticks.
         // ! IMPORTANT ! A 'tick' is a 20th of a second. Minecraft servers run at 20 ticks per second. (TPS)
     }
@@ -359,6 +408,7 @@ public abstract class WarMode implements Listener {
         runtimeTask = null; // Free up the task in memory.
         HandlerList.unregisterAll(this); // Unregister all listener handlers for this class. (Spigot)
         setActive(false); // Sets this gamemode as inactive and will be ignored by the program.
+        resetCommon(); // Resets common values in external Gamemode class.
         reset(); // Resets any other values in the external class.
         resetLocalValues(); // Resets values defined in this class as stated below.
         map = null; // Frees up the currently playing map's assignment in memory.
