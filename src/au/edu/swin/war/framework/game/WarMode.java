@@ -36,7 +36,7 @@ public abstract class WarMode implements Listener {
     private BukkitTask runtimeTask; // Global gamemode-specific runtime task.
     protected boolean permaDeath; // Specifies that permanent death is enabled.
     private Team spec; // Holds the Spigot team extension for the spectators.
-    private boolean active; // Whether or not this class is active during a match.
+    protected boolean active; // Whether or not this class is active during a match.
     private int timeElapsed; // Specifies the number of seconds elapsed during the match.
     private Scoreboard score; // Holds the Spigot scoreboard extension that players see.
     private WarMap map; // The map currently associated with this gamemode.
@@ -224,8 +224,10 @@ public abstract class WarMode implements Listener {
      * the winning team or player and the results.
      */
     public void onEnd() {
-        runtimeTask.cancel();
-        decideWinner();
+        if (runtimeTask != null) {
+            runtimeTask.cancel();
+            decideWinner();
+        }
         finish();
     }
 
@@ -293,6 +295,18 @@ public abstract class WarMode implements Listener {
      */
     protected int getTimeElapsed() {
         return timeElapsed;
+    }
+
+    /**
+     * Returns whether or not the current gamemode has permanent
+     * death enabled. This should be used when respawning to not
+     * notify the player that they will respawn as it is permanent
+     * death.
+     *
+     * @return Perma death?
+     */
+    public boolean isPermaDeath() {
+        return permaDeath;
     }
 
     /**

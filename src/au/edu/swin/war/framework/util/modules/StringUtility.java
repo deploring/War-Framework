@@ -48,7 +48,7 @@ public class StringUtility extends WarModule {
         int i = 1;
         while (i <= array.size()) {
             if (i == array.size())
-                format.append(ChatColor.RESET).append(" and ").append(array.get(i - 1).toString());
+                format.append(ChatColor.WHITE).append(" and ").append(array.get(i - 1).toString());
             else if (i == 1)
                 format = new StringBuilder(array.get(0).toString());
             else
