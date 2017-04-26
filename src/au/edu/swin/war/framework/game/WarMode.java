@@ -34,7 +34,7 @@ public abstract class WarMode implements Listener {
     // !! IMPORTANT !! //
     /* Ensure that these fields are initialized & freed when needed. */
     private BukkitTask runtimeTask; // Global gamemode-specific runtime task.
-    private boolean permaDeath; // Specifies that permanent death is enabled.
+    protected boolean permaDeath; // Specifies that permanent death is enabled.
     private Team spec; // Holds the Spigot team extension for the spectators.
     private boolean active; // Whether or not this class is active during a match.
     private int timeElapsed; // Specifies the number of seconds elapsed during the match.

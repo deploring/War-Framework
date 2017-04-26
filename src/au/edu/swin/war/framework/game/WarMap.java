@@ -1,6 +1,7 @@
 package au.edu.swin.war.framework.game;
 
 import au.edu.swin.war.framework.WarPlayer;
+import au.edu.swin.war.framework.stored.Activatable;
 import au.edu.swin.war.framework.stored.SerializedLocation;
 import au.edu.swin.war.framework.util.WarManager;
 import org.bukkit.Location;
@@ -45,7 +46,8 @@ public abstract class WarMap implements Listener {
     boolean wasSet = false; // Was this map manually set out of rotation?
 
     /* Team-related data. */
-    HashMap<String, Object> attributes; // Custom map attributes can be set here if needed.
+    final HashMap<String, Object> attributes; // Custom map attributes can be set here if needed.
+    final List<Activatable> objectives; // Objectives which are activatable should be set here.
     private final HashMap<String, WarTeam> teams; // The list of defined teams available in this map.
     final HashMap<String, ArrayList<SerializedLocation>> teamSpawns; // A key/value set defining all team spawns.
     protected SerializedLocation specSpawn; // The location at which all spectators will initially spawn.
@@ -68,6 +70,7 @@ public abstract class WarMap implements Listener {
         /* Initialize things that need to be ready for the configuration. */
         teams = new HashMap<>(); // The Key/Value set only needs to be cleared on a match end. Do not null or free it.
         teamSpawns = new HashMap<>(); // The same as above applies to the spawns. Please clear instead of nulling.
+        objectives = new ArrayList<>(); // Initialize the objectives array.
 
         /* Here are some default values which can be modified by extended configurations. */
         attributes = new HashMap<>(); // Initialise the key/value set first!!
@@ -137,7 +140,7 @@ public abstract class WarMap implements Listener {
      * An example usage of this procedure would be to enable listeners
      * and initialize values to get a map-specific ability to work.
      */
-    public void postStart() {
+    protected void postStart() {
     }
 
     /**
@@ -173,6 +176,17 @@ public abstract class WarMap implements Listener {
      * @param target The player to apply.
      */
     public abstract void applyInventory(WarPlayer target);
+
+    /**
+     * Returns the list of map objectives if applicable.
+     * <p>
+     * An objective can be a Destroy The Monument monument.
+     *
+     * @return The map's objectives.
+     */
+    public List<Activatable> objectives() {
+        return objectives;
+    }
 
     /**
      * Returns the key/value set of attributes for this map.
@@ -246,7 +260,7 @@ public abstract class WarMap implements Listener {
      *
      * @see PlayerDeathEvent;
      */
-    public Material[] defaultDisabledDrops() {
+    protected Material[] defaultDisabledDrops() {
         return new Material[]{Material.LEATHER_BOOTS, Material.LEATHER_LEGGINGS, Material.LEATHER_CHESTPLATE,
                 Material.LEATHER_HELMET, Material.WOOD_SWORD, Material.STONE_SWORD, Material.IRON_BOOTS, Material.IRON_LEGGINGS,
                 Material.IRON_CHESTPLATE, Material.IRON_HELMET, Material.IRON_SWORD, Material.GOLD_BOOTS, Material.GOLD_LEGGINGS,
@@ -354,7 +368,7 @@ public abstract class WarMap implements Listener {
      *
      * @param mapName The name of the map.
      */
-    public void setMapName(String mapName) {
+    protected void setMapName(String mapName) {
         this.mapName = mapName;
     }
 
@@ -375,7 +389,7 @@ public abstract class WarMap implements Listener {
      * @param creators The creators of this map.
      * @see UUID
      */
-    public void setCreators(UUID[] creators) {
+    protected void setCreators(UUID[] creators) {
         this.creators = creators;
     }
 
@@ -395,7 +409,7 @@ public abstract class WarMap implements Listener {
      *
      * @param active Whether the map is active or not.
      */
-    public void setActive(boolean active) {
+    protected void setActive(boolean active) {
         this.active = active;
     }
 

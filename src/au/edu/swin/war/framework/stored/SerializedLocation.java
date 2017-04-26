@@ -1,5 +1,8 @@
 package au.edu.swin.war.framework.stored;
 
+import org.bukkit.Location;
+import org.bukkit.World;
+
 /**
  * This class is fundamentally the same as Spigot's Location
  * class (or record, since it holds extra data). However, this
@@ -18,10 +21,6 @@ package au.edu.swin.war.framework.stored;
  * Created by Josh on 27/03/2017.
  * @since 1.0
  */
-
-import org.bukkit.Location;
-import org.bukkit.World;
-
 public class SerializedLocation {
 
     /* Getters and setters are not required for these variables. */

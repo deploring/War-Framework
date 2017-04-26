@@ -19,8 +19,8 @@ import java.util.HashMap;
  */
 public abstract class WarCache extends WarModule {
 
-    protected HashMap<String, WarMap> maps; // The key/value set for all maps.
-    protected HashMap<String, WarMode> gamemodes; // The key/value set for all gamemodes.
+    protected final HashMap<String, WarMap> maps; // The key/value set for all maps.
+    protected final HashMap<String, WarMode> gamemodes; // The key/value set for all gamemodes.
 
     /**
      * Constructor of the cache. It should:
