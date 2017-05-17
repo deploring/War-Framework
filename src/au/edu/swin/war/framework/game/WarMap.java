@@ -47,7 +47,7 @@ public abstract class WarMap implements Listener {
 
     /* Team-related data. */
     final HashMap<String, Object> attributes; // Custom map attributes can be set here if needed.
-    final List<Activatable> objectives; // Objectives which are activatable should be set here.
+    private final List<Activatable> objectives; // Objectives which are activatable should be set here.
     private final HashMap<String, WarTeam> teams; // The list of defined teams available in this map.
     final HashMap<String, ArrayList<SerializedLocation>> teamSpawns; // A key/value set defining all team spawns.
     protected SerializedLocation specSpawn; // The location at which all spectators will initially spawn.
@@ -85,6 +85,7 @@ public abstract class WarMap implements Listener {
         attributes.put("matchDuration", 900); // Defines the default match duration as 15 minutes. (900 seconds)
         attributes.put("ffaKills", 20); // Defines the default kill cap needed to win an FFA. (20 kills)
         attributes.put("captureRequirement", 3); // Defines the default amount of flag captures to win a CTF. (3 caps)
+        attributes.put("captureTime", 180); // Defines the default amount of time to hold a flag to win a KoTH. (180 seconds)
 
         // For the love of god, please call init()!
         // When configuring a map, please call super(); before doing anything else!
@@ -246,7 +247,7 @@ public abstract class WarMap implements Listener {
      * @param disabledDrops Items that will not be dropped on death.
      * @see PlayerDeathEvent
      */
-    public void setDisabledDrops(Material[] disabledDrops) {
+    protected void setDisabledDrops(Material[] disabledDrops) {
         this.disabledDrops = disabledDrops;
     }
 
@@ -283,6 +284,16 @@ public abstract class WarMap implements Listener {
      */
     public long getMatchDuration() {
         return (Long) attributes.get("matchDuration");
+    }
+
+    /**
+     * Sets the maximum duration of the match, in seconds.
+     * See more documentation of match duration above.
+     *
+     * @param matchDuration The maximum duration of the match.
+     */
+    public void setMatchDuration(long matchDuration) {
+        attributes.put("matchDuration", matchDuration);
     }
 
     /**
