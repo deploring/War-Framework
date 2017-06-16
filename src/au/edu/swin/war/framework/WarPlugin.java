@@ -84,7 +84,7 @@ public abstract class WarPlugin extends JavaPlugin implements Listener {
          Commands are specific statements executed by players.
          An example command is /join, which sets the player as 'joined.
          */
-        commands = new CommandsManager<CommandSender>() {
+        commands = new com.sk89q.minecraft.util.commands.CommandsManager<CommandSender>() {
             @Override
             public boolean hasPermission(CommandSender player, String perm) {
                 // Simple function to check whether or not the player has a permission.
