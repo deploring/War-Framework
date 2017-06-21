@@ -5,7 +5,6 @@ import au.edu.swin.war.framework.game.WarTeam;
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
 import org.bukkit.Material;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -29,6 +28,7 @@ import java.util.ArrayList;
  * @see ItemStack
  * @since 1.0
  */
+@SuppressWarnings("unused")
 public class ItemUtility {
 
     /**
@@ -37,6 +37,9 @@ public class ItemUtility {
      * @param inv Inventory to check.
      * @return Whether or not it is empty.
      * @see Inventory
+     *
+     * Currently not used, but may used in the future?
+     * (-> no maps I added currently use this function)
      */
     public boolean isInventoryEmpty(Inventory inv) {
         for (ItemStack item : inv.getContents()) { // Checks every item slot in an inventory.
@@ -69,28 +72,13 @@ public class ItemUtility {
 
     /**
      * Modifies an ItemStack's ItemMeta.
-     * Adds an additional enchantment onto it, if needed.
-     * Make sure the first Object is an Enchantment, and the second is an Integer.
      *
      * @param stack The ItemStack to change.
      * @param name  The ItemStack's name.
      * @param lore  The ItemStack's lore.
-     */
-    public ItemStack changeItem(ItemStack stack, String name, String[] lore, Object[]... enchant) {
-        changeItem(stack, name, lore);
-        if (enchant != null)
-            for (Object[] ench : enchant) // Grab both the Enchantment and the level of the enchantment.
-                stack.addUnsafeEnchantment((Enchantment) ench[0], (int) ench[1]); // Apply it unsafely.
-        return stack;
-        // For statement documentation, check the 2nd below function.
-    }
-
-    /**
-     * Modifies an ItemStack's ItemMeta.
      *
-     * @param stack The ItemStack to change.
-     * @param name  The ItemStack's name.
-     * @param lore  The ItemStack's lore.
+     * Currently not used, but may used in the future?
+     * (-> no maps I added currently use this function)
      */
     private ItemStack changeItem(ItemStack stack, String name, Object[] lore) {
         ArrayList<String> loreList = new ArrayList<>();
@@ -125,6 +113,9 @@ public class ItemUtility {
      *
      * @param stack The ItemStack to change.
      * @param name  The ItemStack's name.
+     *
+     * Currently not used, but may used in the future?
+     * (-> no maps I added currently use this function)
      */
     public ItemStack changeItem(ItemStack stack, String name) {
         ItemMeta meta = stack.getItemMeta();
@@ -142,6 +133,9 @@ public class ItemUtility {
      * @param armor       The armor piece to color.
      * @param currentTeam The user's current team.
      * @return The colored armor.
+     *
+     * Currently not used, but may used in the future?
+     * (-> no maps I added currently use this function)
      */
     public ItemStack colorArmor(ItemStack armor, WarTeam currentTeam) {
         LeatherArmorMeta meta = (LeatherArmorMeta) armor.getItemMeta(); // Gets the leather armor's specific meta.
@@ -156,6 +150,9 @@ public class ItemUtility {
      * @param name The name of the player.
      * @return The skull.
      * @see SkullMeta
+     *
+     * Currently not used, but may used in the future?
+     * (-> no maps I added currently use this function)
      */
     public ItemStack giveSkull(String name) {
         ItemStack skull = new ItemStack(Material.SKULL_ITEM, 1, (short) 3); // Creates an ItemStack of player skull.
@@ -172,6 +169,9 @@ public class ItemUtility {
      * @param duration  Duration.
      * @param amplifier Strength.
      * @return The potion.
+     *
+     * Currently not used, but may used in the future?
+     * (-> no maps I added currently use this function)
      */
     public ItemStack createPotion(PotionEffectType type, int duration, int amplifier) {
         ItemStack POTION = new ItemStack(Material.POTION); // Creates a potion with no ingredients.

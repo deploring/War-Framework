@@ -43,7 +43,7 @@ public abstract class WarMap implements Listener {
     /* Do not interfere with these values! */
     protected WarManager main; // The WarManager instance. This allows access to all other crucial modules.
     private boolean active = false; // Specified if this map is currently being played.
-    boolean wasSet = false; // Was this map manually set out of rotation?
+    boolean wasSet = false; // Was this map manually set out of rotation? //TODO: Remove this, no longer needed
 
     /* Team-related data. */
     final HashMap<String, Object> attributes; // Custom map attributes can be set here if needed.
@@ -82,7 +82,7 @@ public abstract class WarMap implements Listener {
         attributes.put("fireSpread", false); // fireSpread allows fire to burn, destroy, and spread to other blocks;
         // -ONLY IF THEY ARE SET TO TRUE!
 
-        attributes.put("matchDuration", 900); // Defines the default match duration as 15 minutes. (900 seconds)
+        attributes.put("matchDuration", 900L); // Defines the default match duration as 15 minutes. (900 seconds)
         attributes.put("ffaKills", 20); // Defines the default kill cap needed to win an FFA. (20 kills)
         attributes.put("captureRequirement", 3); // Defines the default amount of flag captures to win a CTF. (3 caps)
         attributes.put("captureTime", 180); // Defines the default amount of time to hold a flag to win a KoTH. (180 seconds)

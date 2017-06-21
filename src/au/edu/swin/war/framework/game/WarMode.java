@@ -376,9 +376,9 @@ public abstract class WarMode implements Listener {
                     }
                     incrementTimeElapsed(); // Increments the time elapsed, every second!
 
-                    int timeLeft = getMatchDuration() - getTimeElapsed(); // Calculates the amount of time remaining.
+                    long timeLeft = getMatchDuration() - getTimeElapsed(); // Calculates the amount of time remaining.
                     if (timeLeft % 60 == 0 && timeLeft != 0) { // Checks that the time is a remainder of
-                        int minutes = (timeLeft / 60); // Calculates number of minutes remaining.
+                        long minutes = (timeLeft / 60); // Calculates number of minutes remaining.
                         String s = (minutes == 1 ? "" : "s"); // Should it be 'minute' or 'minutes'?
 
                         // Broadcasts the amount of minutes remaining.
@@ -565,8 +565,8 @@ public abstract class WarMode implements Listener {
      *
      * @return The duration of the map.
      */
-    private Integer getMatchDuration() {
-        return (Integer) map().attributes.get("matchDuration");
+    private Long getMatchDuration() {
+        return (Long) map().attributes.get("matchDuration");
     }
 
     /**

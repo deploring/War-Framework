@@ -133,7 +133,7 @@ public final class WarTeam {
      *
      * @param bukkitTeam The Bukkit Team the gamemode will assign & control.
      */
-    public void setBukkitTeam(Team bukkitTeam) {
+    void setBukkitTeam(Team bukkitTeam) {
         this.bukkitTeam = bukkitTeam;
     }
 

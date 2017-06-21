@@ -94,6 +94,9 @@ public abstract class WarCache extends WarModule {
      *
      * @param preference The team to try and find.
      * @return The team found, if any.
+     *
+     * (this function was for debugging purposes)
+     * (might have a use later or no?)
      */
     public WarTeam matchTeam(String preference) {
         WarTeam found = null;
