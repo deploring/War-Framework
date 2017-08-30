@@ -69,7 +69,7 @@ public class StringUtility extends WarModule {
         long generated = new Random().nextInt(90000) + 10000;
         // Number between 11111-99999;
 
-        if (main().match().getRoundID_() == generated) return generateID();
+        if (main().match().getRawRoundID() == generated) return generateID();
         // Though a very small chance, regenerate if it is the same as the previous round.
         return generated;
     }

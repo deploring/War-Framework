@@ -145,10 +145,7 @@ public abstract class WarManager {
      * and if applicable, give the player a spectator kit.
      *
      * @param wp The target player.
-     * @deprecated I was going to include some kindof spectator kit but I didn't.
-     * This is just here for reference into what I didn't add.
      */
-    @Deprecated
     public abstract void giveSpectatorKit(WarPlayer wp);
 
     /**

@@ -16,6 +16,7 @@ import org.bukkit.inventory.ItemStack;
 
 import java.io.*;
 import java.lang.reflect.Field;
+import java.nio.file.Files;
 import java.util.Map;
 import java.util.Random;
 
@@ -110,15 +111,18 @@ public class WorldUtility extends WarModule {
      * fresh copy is used when the same map is played again.
      *
      * @param map The world to restore, using the 5-digit ID.
-     * @return Whether it successfully restored or not.
      */
-    public boolean restoreMap(String map) {
+    public void restoreMap(String map) {
         if (Bukkit.getWorld(map) != null) {
             // If the world is still loaded, unload it forcibly and get rid of it.
             main().plugin().log("Unloading world " + map);
             forceUnloadWorld(Bukkit.getWorld(map));
         }
-        return delete(new File(map)); // Bye bye!
+        try {
+            delete(new File(map)); // Bye bye!
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -148,28 +152,21 @@ public class WorldUtility extends WarModule {
      * <p>
      * This demonstrates file I/O.
      *
-     * @param folder Directory to delete.
-     * @return Whether the directory was successfully deleted.
+     * @param path Directory to delete.
      */
-    private boolean delete(File folder) {
-        if (!folder.exists())
-            return true;
-        if (folder.isDirectory()) {
+    @SuppressWarnings("ConstantConditions")
+    private void delete(File path) throws IOException {
+        if (!path.exists())
+            return;
+        if (path.isDirectory()) {
             // If this is a directory, delete the files within it.
-            File[] toDelete = folder.listFiles();
-            for (File f : toDelete != null ? toDelete : new File[0]) {
-                if (!f.setWritable(true) && !delete(f)) {
-                    main().plugin().log("Failed to delete file: " + f.toString());
-                    try {
-                        FileUtils.forceDelete(f);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
+            File[] toDelete = path.listFiles();
+            if (toDelete.length > 0)
+                for (File f : toDelete)
+                    delete(f); // Delete any files in the directory first.
         }
-        // Otherwise delete this.
-        return folder.delete();
+        // We can delete it now.
+        Files.delete(path.toPath());
     }
 
     /**

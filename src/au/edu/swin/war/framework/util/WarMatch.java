@@ -77,7 +77,7 @@ public abstract class WarMatch extends WarModule {
      *
      * @return Round it.
      */
-    public long getRoundID_() {
+    public long getRawRoundID() {
         return roundID;
     }
 
@@ -259,7 +259,7 @@ public abstract class WarMatch extends WarModule {
      * This enumerated type ensures accuracy & readability when
      * defining the the status of a round.
      * <p>
-     * The NONE status is used when no round has been established.
+     * The NONE status is used when no match has been established.
      */
     public enum Status {
         VOTING,

@@ -37,7 +37,7 @@ public class ItemUtility {
      * @param inv Inventory to check.
      * @return Whether or not it is empty.
      * @see Inventory
-     *
+     * <p>
      * Currently not used, but may used in the future?
      * (-> no maps I added currently use this function)
      */
@@ -76,9 +76,9 @@ public class ItemUtility {
      * @param stack The ItemStack to change.
      * @param name  The ItemStack's name.
      * @param lore  The ItemStack's lore.
-     *
-     * Currently not used, but may used in the future?
-     * (-> no maps I added currently use this function)
+     *              <p>
+     *              Currently not used, but may used in the future?
+     *              (-> no maps I added currently use this function)
      */
     private ItemStack changeItem(ItemStack stack, String name, Object[] lore) {
         ArrayList<String> loreList = new ArrayList<>();
@@ -113,9 +113,9 @@ public class ItemUtility {
      *
      * @param stack The ItemStack to change.
      * @param name  The ItemStack's name.
-     *
-     * Currently not used, but may used in the future?
-     * (-> no maps I added currently use this function)
+     *              <p>
+     *              Currently not used, but may used in the future?
+     *              (-> no maps I added currently use this function)
      */
     public ItemStack changeItem(ItemStack stack, String name) {
         ItemMeta meta = stack.getItemMeta();
@@ -133,7 +133,7 @@ public class ItemUtility {
      * @param armor       The armor piece to color.
      * @param currentTeam The user's current team.
      * @return The colored armor.
-     *
+     * <p>
      * Currently not used, but may used in the future?
      * (-> no maps I added currently use this function)
      */
@@ -150,7 +150,7 @@ public class ItemUtility {
      * @param name The name of the player.
      * @return The skull.
      * @see SkullMeta
-     *
+     * <p>
      * Currently not used, but may used in the future?
      * (-> no maps I added currently use this function)
      */
@@ -169,7 +169,7 @@ public class ItemUtility {
      * @param duration  Duration.
      * @param amplifier Strength.
      * @return The potion.
-     *
+     * <p>
      * Currently not used, but may used in the future?
      * (-> no maps I added currently use this function)
      */
@@ -189,38 +189,39 @@ public class ItemUtility {
      * @return The matching Color.
      */
     private Color convertChatToDye(ChatColor color) {
-        if (color == ChatColor.AQUA)
-            return Color.AQUA;
-        else if (color == ChatColor.BLACK)
-            return Color.BLACK;
-        else if (color == ChatColor.BLUE)
-            return Color.BLUE;
-        else if (color == ChatColor.DARK_AQUA)
-            return Color.TEAL;
-        else if (color == ChatColor.DARK_BLUE)
-            return Color.NAVY;
-        else if (color == ChatColor.DARK_GRAY)
-            return Color.GRAY;
-        else if (color == ChatColor.DARK_GREEN)
-            return Color.GREEN;
-        else if (color == ChatColor.DARK_PURPLE)
-            return Color.PURPLE;
-        else if (color == ChatColor.DARK_RED)
-            return Color.MAROON;
-        else if (color == ChatColor.GOLD)
-            return Color.ORANGE;
-        else if (color == ChatColor.GRAY)
-            return Color.GRAY;
-        else if (color == ChatColor.GREEN)
-            return Color.LIME;
-        else if (color == ChatColor.LIGHT_PURPLE)
-            return Color.FUCHSIA;
-        else if (color == ChatColor.RED)
-            return Color.RED;
-        else if (color == ChatColor.YELLOW)
-            return Color.YELLOW;
-        else if (color == ChatColor.WHITE)
-            return Color.WHITE;
-        else return Color.WHITE;
+        switch (color) {
+            case AQUA:
+                return Color.AQUA;
+            case BLACK:
+                return Color.BLACK;
+            case BLUE:
+                return Color.BLUE;
+            case DARK_AQUA:
+                return Color.TEAL;
+            case DARK_BLUE:
+                return Color.NAVY;
+            case DARK_GRAY:
+                return Color.GRAY;
+            case DARK_GREEN:
+                return Color.GREEN;
+            case DARK_PURPLE:
+                return Color.PURPLE;
+            case DARK_RED:
+                return Color.MAROON;
+            case GOLD:
+                return Color.ORANGE;
+            case GRAY:
+                return Color.GRAY;
+            case GREEN:
+                return Color.LIME;
+            case LIGHT_PURPLE:
+                return Color.FUCHSIA;
+            case RED:
+                return Color.RED;
+            case YELLOW:
+                return Color.YELLOW;
+            default:
+                return Color.WHITE;
+        }
     }
 }
