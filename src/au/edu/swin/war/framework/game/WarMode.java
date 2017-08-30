@@ -46,6 +46,7 @@ public abstract class WarMode implements Listener {
     private HashMap<String, ArrayList<SerializedLocation>> teamSpawns; // Temporary Key/Value set to hold Team spawns.
 
     protected WarManager main; // The WarManager instance. This allows access to all other crucial modules.
+    protected final Random rng; // A random number generator for any usage.
 
     /**
      * Since this class is intialized through reflections,
@@ -56,6 +57,7 @@ public abstract class WarMode implements Listener {
      */
     public WarMode() {
         // Call init() externally
+        rng = new Random();
     }
 
     /**
@@ -402,6 +404,31 @@ public abstract class WarMode implements Listener {
     }
 
     /**
+     * Automatically balances everyone onto teams.
+     */
+    protected void autoAssign() {
+        // Keep a temporary list of people who have not being assigned to a team.
+        ArrayList<WarPlayer> targets = new ArrayList<>(main.getWarPlayers().values());
+        while (targets.size() != 0) { // Keep looping until this array is empty.
+            WarPlayer target = targets.get(rng.nextInt(targets.size())); // Gets a random player.
+            if (target.isJoined()) {
+                // If joined, use entryHandle() to put them on the lowest team.
+                entryHandle(target);
+                if (!target.isJoined()) {
+                    // If, for some reason, they did not get put on a team, assume them as spectating.
+                    target.getPlayer().setGameMode(GameMode.CREATIVE);
+                    main.giveSpectatorKit(target);
+                }
+            } else {
+                // They don't want to play. Assume them as spectating.
+                target.getPlayer().setGameMode(GameMode.CREATIVE);
+                main.giveSpectatorKit(target);
+            }
+            targets.remove(target);
+        }
+    }
+
+    /**
      * This procedure is automatically called by the runtimeTask
      * every 20 ticks, or every 1 second. You must configure this
      * procedure, but you don't have to use it if it isn't needed.
@@ -500,14 +527,13 @@ public abstract class WarMode implements Listener {
         } else if (wp.isJoined()) {
             // Assign the player to their team and call onJoin() for the external class.
             carryOutTeam(wp, getSmallestTeam());
-            onJoin(wp);
         } else { // If the player did not join, execute a leaving handle.
             if (!permaDeath)
                 pl.sendMessage("You have left the match!"); // Alert the player physically if this is not a permadeath match.
             WarTeam team = wp.getCurrentTeam(); // Returns the player's associated team for temporary use.
             wp.setCurrentTeam(null); // Disassociates the player with their team.
             pl.teleport(map().getSpectatorSpawn()); // Teleports the player to the map's spectator spawnpoint. (Spigot)
-            pl.setGameMode(GameMode.SPECTATOR); // Sets the player to spectator mode. (Spigot)
+            pl.setGameMode(GameMode.CREATIVE); // Sets the player to spectator mode. (Spigot)
             team.getBukkitTeam().removePlayer(pl); // Removes the player from their Spigot team. (Spigot)
             spec.addPlayer(pl); // Assigns the player to the spectator team. (Spigot).
             main.items().clear(wp); // Clears the player's inventory.
@@ -529,6 +555,14 @@ public abstract class WarMode implements Listener {
      */
     private void carryOutTeam(WarPlayer dp, WarTeam team) {
         Player pl = dp.getPlayer(); // Assigns Spigot player implementation.
+
+        if (team.isFull()) {
+            //
+            pl.sendMessage("All teams are full, please try joining later.");
+            dp.setJoined(false);
+            return;
+        }
+
         pl.sendMessage("You have joined the " + team.getTeamColor() + team.getTeamName()); // Alerts player.
         pl.teleport(randomSpawnFrom(teamSpawns.get(team.getTeamName())).toLocation(main.match().getCurrentWorld(), true)); // Teleports player to random team spawnpoint. (Spigot)
         pl.setGameMode(GameMode.SURVIVAL); // Sets the player's gamemode to survival. (Spigot)
@@ -536,6 +570,8 @@ public abstract class WarMode implements Listener {
         spec.removePlayer(pl); // Removes the player from the spectator team. (Spigot)
         team.getBukkitTeam().addPlayer(pl); // Assigns the player to the team's Spigot team. (Spigot)
         map().applyInv(dp); // Applies the map's inventory to the player.
+
+        onJoin(dp);
     }
 
     /**

@@ -138,6 +138,15 @@ public final class WarTeam {
     }
 
     /**
+     * Returns whether or not the team is accepting any more members.
+     *
+     * @return Whether team is full or not.
+     */
+    public boolean isFull(){
+        return bukkitTeam.getEntries().size() >= maxTeamSize;
+    }
+
+    /**
      * Creates an instantiated copy of this class and
      * any relevant fields needed for manipulation.
      *

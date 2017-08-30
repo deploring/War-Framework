@@ -1,6 +1,7 @@
 package au.edu.swin.war.framework;
 
 import au.edu.swin.war.framework.game.WarTeam;
+import au.edu.swin.war.framework.util.WarManager;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
@@ -12,7 +13,7 @@ import org.bukkit.entity.Player;
  * connects and must be destroyed once they disconnect.
  *
  * @author s101601828 @ Swin.
- * @version 1.0
+ * @version 1.1
  * @see org.bukkit.entity.Player
  * <p>
  * Created by Josh on 20/03/2017.
@@ -23,16 +24,19 @@ public final class WarPlayer {
     private final Player player; // The Spigot's player implementation
     private WarTeam currentTeam; // The team the player is currently on
     private boolean joined; // Whether or not the player is marked as joined
+    private WarManager manager; // Instance of the supercontroller.
 
     /**
      * Constructor for WarPlayer class.
      *
-     * @param player The Spigot instance of the Player's entity.
+     * @param player  The Spigot instance of the Player's entity.
+     * @param manager Instance of the supercontroller.
      */
-    public WarPlayer(Player player) {
+    public WarPlayer(Player player, WarManager manager) {
         this.player = player;
         this.currentTeam = null;
         this.joined = false;
+        this.manager = manager;
     }
 
     /**
@@ -46,12 +50,12 @@ public final class WarPlayer {
     }
 
     /**
-     * Associates the player with the team on a global level.
+     * Sets the 'joined' state of the player.
      *
-     * @param newTeam The team to associate the player with.
+     * @param joined The joined state.
      */
-    public void setCurrentTeam(WarTeam newTeam) {
-        this.currentTeam = newTeam;
+    public void setJoined(boolean joined) {
+        this.joined = joined;
     }
 
     /**
@@ -65,12 +69,51 @@ public final class WarPlayer {
     }
 
     /**
-     * Sets the 'joined' state of the player.
+     * Associates the player with the team on a global level.
      *
-     * @param joined The joined state.
+     * @param newTeam The team to associate the player with.
      */
-    public void setJoined(boolean joined) {
-        this.joined = joined;
+    public void setCurrentTeam(WarTeam newTeam) {
+        this.currentTeam = newTeam;
+        changeVisibility();
+    }
+
+    /**
+     * Changes the player's visibility to others based
+     * on whether or not they are in the round.
+     */
+    private void changeVisibility() {
+        if (isPlaying()) {
+            player.setCollidable(true);
+            // If they are playing, everyone can see this player.
+            // They however, cannot see spectators.
+            for (WarPlayer dp : manager.getWarPlayers().values())
+                if (dp.equals(this)) continue;
+                else if (dp.isPlaying()) {
+                    // They are both playing, so they can both see each other.
+                    dp.getPlayer().showPlayer(player);
+                    player.showPlayer(dp.getPlayer());
+                } else {
+                    // The other player is spectating, so this player cannot see them.
+                    dp.getPlayer().showPlayer(player);
+                    player.hidePlayer(dp.getPlayer());
+                }
+        } else {
+            player.setCollidable(false);
+            // If they are spectating, only spectators can see this player.
+            // They can see others playing as well.
+            for (WarPlayer dp : manager.getWarPlayers().values())
+                if (dp.equals(this)) continue;
+                else if (dp.isPlaying()) {
+                    // The other player is playing, so they cannot see this player.
+                    dp.getPlayer().hidePlayer(player);
+                    player.showPlayer(dp.getPlayer());
+                } else {
+                    // The other player is spectating, so they can see each other.
+                    dp.getPlayer().showPlayer(player);
+                    player.showPlayer(dp.getPlayer());
+                }
+        }
     }
 
     /**

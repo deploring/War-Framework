@@ -509,7 +509,8 @@ public abstract class WarMap implements Listener {
      */
     @EventHandler
     public void brk(BlockBreakEvent event) {
-        if (!(Boolean) attributes.get("blockBreak")) event.setCancelled(true);
+        if (!(Boolean) attributes.get("blockBreak"))
+            event.setCancelled(main.match().isAffected(event.getPlayer()));
     }
 
     /**
@@ -519,6 +520,7 @@ public abstract class WarMap implements Listener {
      */
     @EventHandler
     public void plc(BlockPlaceEvent event) {
-        if (!(Boolean) attributes.get("blockPlace")) event.setCancelled(true);
+        if (!(Boolean) attributes.get("blockPlace"))
+            event.setCancelled(main.match().isAffected(event.getPlayer()));
     }
 }

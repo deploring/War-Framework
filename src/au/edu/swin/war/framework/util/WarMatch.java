@@ -1,8 +1,10 @@
 package au.edu.swin.war.framework.util;
 
+import au.edu.swin.war.framework.WarPlayer;
 import au.edu.swin.war.framework.game.WarMode;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
+import org.bukkit.entity.Entity;
 
 import java.io.File;
 import java.io.IOException;
@@ -88,6 +90,31 @@ public abstract class WarMatch extends WarModule {
      */
     protected void setRoundID(long roundID) {
         this.roundID = roundID;
+    }
+
+    /**
+     * Checks whether or not the player can interact in a match
+     * based on their state and whether or not they're an admin.
+     *
+     * @param pl          The player, to check their state.
+     * @param adminBypass If true, returns true always if player is admin.
+     * @return Whether or not the player can interact.
+     */
+    public boolean canInteract(Entity pl, boolean adminBypass) {
+        WarPlayer wp = main().getWarPlayer(pl.getUniqueId());
+        return wp == null || (wp.isPlaying() || adminBypass && pl.hasPermission("war.admin"));
+    }
+
+    /**
+     * Checks whether this played should be affected by something
+     * in a match. Basically returns false if not a spectator.
+     *
+     * @param pl The player, to check their state.
+     * @return Whether or not they are affected.
+     */
+    public boolean isAffected(Entity pl){
+        WarPlayer wp = main().getWarPlayer(pl.getUniqueId());
+        return wp != null && wp.isPlaying();
     }
 
     /**
