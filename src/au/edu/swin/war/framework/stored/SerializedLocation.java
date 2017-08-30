@@ -72,4 +72,16 @@ public class SerializedLocation {
         if (pitch) return new Location(world, x, y, z, yaw, this.pitch);
         return new Location(world, x, y, z);
     }
+
+    public double x() {
+        return x;
+    }
+
+    public double y() {
+        return y;
+    }
+
+    public double z() {
+        return z;
+    }
 }

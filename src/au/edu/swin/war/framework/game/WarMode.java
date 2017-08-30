@@ -4,10 +4,8 @@ import au.edu.swin.war.framework.WarPlayer;
 import au.edu.swin.war.framework.stored.SerializedLocation;
 import au.edu.swin.war.framework.util.WarManager;
 import au.edu.swin.war.framework.util.WarMatch;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.GameMode;
-import org.bukkit.OfflinePlayer;
+import net.md_5.bungee.api.chat.TextComponent;
+import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
@@ -31,22 +29,20 @@ import java.util.*;
  */
 public abstract class WarMode implements Listener {
 
+    private final Random rng; // A random number generator for any usage.
+    protected boolean permaDeath; // Specifies that permanent death is enabled.
+    protected boolean active; // Whether or not this class is active during a match.
+    protected WarManager main; // The WarManager instance. This allows access to all other crucial modules.
     // !! IMPORTANT !! //
     /* Ensure that these fields are initialized & freed when needed. */
     private BukkitTask runtimeTask; // Global gamemode-specific runtime task.
-    protected boolean permaDeath; // Specifies that permanent death is enabled.
     private Team spec; // Holds the Spigot team extension for the spectators.
-    protected boolean active; // Whether or not this class is active during a match.
     private int timeElapsed; // Specifies the number of seconds elapsed during the match.
     private Scoreboard score; // Holds the Spigot scoreboard extension that players see.
     private WarMap map; // The map currently associated with this gamemode.
-
     /* HashMaps that must be initialized/freed on a match start/end. */
     private HashMap<String, WarTeam> teams; // Temporary Key/Value set to hold maps for the match.
     private HashMap<String, ArrayList<SerializedLocation>> teamSpawns; // Temporary Key/Value set to hold Team spawns.
-
-    protected WarManager main; // The WarManager instance. This allows access to all other crucial modules.
-    protected final Random rng; // A random number generator for any usage.
 
     /**
      * Since this class is intialized through reflections,
@@ -283,20 +279,20 @@ public abstract class WarMode implements Listener {
     }
 
     /**
-     * Sets -specifically- the amount of time elapsed
-     * in the match. Mainly for debugging purposes.
-     */
-    protected void setTimeElapsed(int timeElapsed) {
-        this.timeElapsed = timeElapsed;
-    }
-
-    /**
      * Returns the amount of time elapsed during this match.
      *
      * @return The amount of time elapsed.
      */
     protected int getTimeElapsed() {
         return timeElapsed;
+    }
+
+    /**
+     * Sets -specifically- the amount of time elapsed
+     * in the match. Mainly for debugging purposes.
+     */
+    protected void setTimeElapsed(int timeElapsed) {
+        this.timeElapsed = timeElapsed;
     }
 
     /**
@@ -367,6 +363,13 @@ public abstract class WarMode implements Listener {
 
         initializeCommon(); // Initializes common values in the extended gamemode class.
         initialize(); // Initializes everything in the external gamemode class!
+
+        // Pre-round attribute assignment
+        if (map.attr().containsKey("timeLock")) {
+            World world = main.match().getCurrentWorld();
+            world.setGameRuleValue("doDaylightCycle", "false");
+            world.setFullTime((Long) map.attr().get("timeLockTime"));
+        }
 
         // Defines the plugin executing the timer and the runnable interface. (Spigot)
         runtimeTask = Bukkit.getScheduler().runTaskTimer( // Runs a task timer at a regular interval. (Spigot)
@@ -534,8 +537,8 @@ public abstract class WarMode implements Listener {
             wp.setCurrentTeam(null); // Disassociates the player with their team.
             pl.teleport(map().getSpectatorSpawn()); // Teleports the player to the map's spectator spawnpoint. (Spigot)
             pl.setGameMode(GameMode.CREATIVE); // Sets the player to spectator mode. (Spigot)
-            team.getBukkitTeam().removePlayer(pl); // Removes the player from their Spigot team. (Spigot)
-            spec.addPlayer(pl); // Assigns the player to the spectator team. (Spigot).
+            team.getBukkitTeam().removeEntry(pl.getName()); // Removes the player from their Spigot team. (Spigot)
+            spec.addEntry(pl.getName()); // Assigns the player to the spectator team. (Spigot).
             main.items().clear(wp); // Clears the player's inventory.
             main.giveSpectatorKit(wp); // Gives the player a spectator kit.
             onLeave(wp); // Calls onLeave() for the external class.
@@ -563,13 +566,17 @@ public abstract class WarMode implements Listener {
             return;
         }
 
-        pl.sendMessage("You have joined the " + team.getTeamColor() + team.getTeamName()); // Alerts player.
         pl.teleport(randomSpawnFrom(teamSpawns.get(team.getTeamName())).toLocation(main.match().getCurrentWorld(), true)); // Teleports player to random team spawnpoint. (Spigot)
         pl.setGameMode(GameMode.SURVIVAL); // Sets the player's gamemode to survival. (Spigot)
+        pl.setFallDistance(0F); // Reset fall distance. (Spigot)
         dp.setCurrentTeam(team); // Assigns the player's team.
-        spec.removePlayer(pl); // Removes the player from the spectator team. (Spigot)
-        team.getBukkitTeam().addPlayer(pl); // Assigns the player to the team's Spigot team. (Spigot)
+        spec.removeEntry(pl.getName()); // Removes the player from the spectator team. (Spigot)
+        team.getBukkitTeam().addEntry(pl.getName()); // Assigns the player to the team's Spigot team. (Spigot)
         map().applyInv(dp); // Applies the map's inventory to the player.
+
+        TextComponent comp = new TextComponent("You have joined the ");
+        comp.addExtra(team.getHoverInformation());
+        pl.spigot().sendMessage(comp);
 
         onJoin(dp);
     }
@@ -586,10 +593,10 @@ public abstract class WarMode implements Listener {
         for (WarTeam team : teams.values()) { // Loops through every team.
             if (size == -1) {
                 found = team; // Recognises this team as the one with the least amount of members.
-                size = team.getBukkitTeam().getPlayers().size(); // Assigns the lowest amount of members to the amount of members in this team.
-            } else if (team.getBukkitTeam().getPlayers().size() < size) {
+                size = team.getBukkitTeam().getEntries().size(); // Assigns the lowest amount of members to the amount of members in this team.
+            } else if (team.getBukkitTeam().getEntries().size() < size) {
                 found = team; // Sets this as the smallest team.
-                size = team.getBukkitTeam().getPlayers().size(); // Assigns new smallest team size.
+                size = team.getBukkitTeam().getEntries().size(); // Assigns new smallest team size.
             }
         }
         return found;

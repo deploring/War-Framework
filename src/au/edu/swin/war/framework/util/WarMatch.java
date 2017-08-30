@@ -30,12 +30,12 @@ import java.util.stream.Stream;
  */
 public abstract class WarMatch extends WarModule {
 
+    public int rotationPoint; // Holds the point at which the rotation is at.
     private WarMode currentMode; // Holds the current gamemode's running instance.
     private Status status; // Holds the current state of the match.
     private String cyclePrevMap; // Holds the map played prior to the last cycle.
     private String currentMap; // Holds the current map being played, if any.
     private long roundID; // A unique, random 5-digit number for the Minecraft world name.
-    public int rotationPoint; // Holds the point at which the rotation is at.
     private List<String> rotationList; // Holds a list of map names that are on the rotation.
 
     /**
@@ -73,6 +73,15 @@ public abstract class WarMatch extends WarModule {
     }
 
     /**
+     * Redefines the round ID being used by the match.
+     *
+     * @param roundID New round ID.
+     */
+    protected void setRoundID(long roundID) {
+        this.roundID = roundID;
+    }
+
+    /**
      * Returns the 5-digit ID of the map's Minecraft world.
      * Some procedures require the number as a number and
      * not as a string, so this is the method that returns it.
@@ -81,15 +90,6 @@ public abstract class WarMatch extends WarModule {
      */
     public long getRawRoundID() {
         return roundID;
-    }
-
-    /**
-     * Redefines the round ID being used by the match.
-     *
-     * @param roundID New round ID.
-     */
-    protected void setRoundID(long roundID) {
-        this.roundID = roundID;
     }
 
     /**
@@ -112,7 +112,7 @@ public abstract class WarMatch extends WarModule {
      * @param pl The player, to check their state.
      * @return Whether or not they are affected.
      */
-    public boolean isAffected(Entity pl){
+    public boolean isAffected(Entity pl) {
         WarPlayer wp = main().getWarPlayer(pl.getUniqueId());
         return wp != null && wp.isPlaying();
     }
@@ -142,6 +142,17 @@ public abstract class WarMatch extends WarModule {
     }
 
     /**
+     * Sets the current map playing, by name.
+     * This does not set the running instance,
+     * but the function that does uses this variable.
+     *
+     * @param currentMap The current map's name.
+     */
+    protected void setCurrentMap(String currentMap) {
+        this.currentMap = currentMap;
+    }
+
+    /**
      * Returns the map that was previously played.
      * This is used when the previous map needs to
      * be known.
@@ -155,17 +166,6 @@ public abstract class WarMatch extends WarModule {
      */
     public String getPreviousMap() {
         return cyclePrevMap;
-    }
-
-    /**
-     * Sets the current map playing, by name.
-     * This does not set the running instance,
-     * but the function that does uses this variable.
-     *
-     * @param currentMap The current map's name.
-     */
-    protected void setCurrentMap(String currentMap) {
-        this.currentMap = currentMap;
     }
 
     /**

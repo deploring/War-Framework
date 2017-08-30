@@ -1,7 +1,9 @@
 package au.edu.swin.war.framework.util.modules;
 
+import au.edu.swin.war.framework.game.WarTeam;
 import au.edu.swin.war.framework.util.WarManager;
 import au.edu.swin.war.framework.util.WarModule;
+import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
 import org.bukkit.inventory.ItemStack;
@@ -56,6 +58,32 @@ public class StringUtility extends WarModule {
             i++;
         }
         return format.toString();
+    }
+
+    /**
+     * Performs the same as above but outputs a TextComponent result.
+     *
+     * @param array Array of TextComponent.
+     * @return The winner format.
+     */
+    public TextComponent winnerFormat(List<WarTeam> array) {
+        if (array.size() == 0) return new TextComponent("No One");
+        TextComponent result = new TextComponent();
+        if (array.size() == 1) return array.get(0).getHoverInformation();
+        int i = 1;
+        while (i <= array.size()) {
+            if (i == array.size()) {
+                result.addExtra(ChatColor.WHITE + " and ");
+                result.addExtra(array.get(i - 1).getHoverInformation());
+            } else if (i == 1)
+                result = new TextComponent(array.get(0).getHoverInformation());
+            else {
+                result.addExtra(ChatColor.WHITE + ", ");
+                result.addExtra(array.get(i - 1).getHoverInformation());
+            }
+            i++;
+        }
+        return result;
     }
 
     /**

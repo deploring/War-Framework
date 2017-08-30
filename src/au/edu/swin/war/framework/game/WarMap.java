@@ -40,18 +40,16 @@ import java.util.*;
  */
 public abstract class WarMap implements Listener {
 
-    /* Do not interfere with these values! */
-    protected WarManager main; // The WarManager instance. This allows access to all other crucial modules.
-    private boolean active = false; // Specified if this map is currently being played.
-    boolean wasSet = false; // Was this map manually set out of rotation? //TODO: Remove this, no longer needed
-
     /* Team-related data. */
     final HashMap<String, Object> attributes; // Custom map attributes can be set here if needed.
+    final HashMap<String, ArrayList<SerializedLocation>> teamSpawns; // A key/value set defining all team spawns.
     private final List<Activatable> objectives; // Objectives which are activatable should be set here.
     private final HashMap<String, WarTeam> teams; // The list of defined teams available in this map.
-    final HashMap<String, ArrayList<SerializedLocation>> teamSpawns; // A key/value set defining all team spawns.
+    /* Do not interfere with these values! */
+    protected WarManager main; // The WarManager instance. This allows access to all other crucial modules.
     protected SerializedLocation specSpawn; // The location at which all spectators will initially spawn.
-
+    boolean wasSet = false; // Was this map manually set out of rotation? //TODO: Remove this, no longer needed
+    private boolean active = false; // Specified if this map is currently being played.
     /* Designation attributes. */
     private UUID[] creators = new UUID[]{}; // An array of map creator UUIDs, if applicable.
     private String mapName; // The name of the map. For example, "Awesome Arena II"!
@@ -215,6 +213,20 @@ public abstract class WarMap implements Listener {
     }
 
     /**
+     * Define the region in which blocks can be interacted with.
+     *
+     * @param x1 Bottom left X.
+     * @param z1 Bottom left Z.
+     * @param x2 Top right X.
+     * @param z2 Top right Z.
+     */
+    protected void setBuildBoundary(int x1, int z1, int x2, int z2) {
+        attributes.put("boundary", true);
+        attributes.put("bottomLeft", new SerializedLocation(Math.min(x1, x2), 0, Math.min(z1, z2)));
+        attributes.put("topRight", new SerializedLocation(Math.max(x1, x2), 0, Math.max(z1, z2)));
+    }
+
+    /**
      * Defines whether or not Minecraft monsters/animals can
      * naturally spawn on the map terrain while a round is in progress.
      *
@@ -232,10 +244,8 @@ public abstract class WarMap implements Listener {
      * and then locks the time permanently to that.
      *
      * @param timeLockTime The time at which to be locked to the map.
-     * @deprecated Using the gamerule doDaylightCycle = false is more effective!
      */
-    @Deprecated
-    public void setTimeLockTime(long timeLockTime) {
+    protected void setTimeLockTime(long timeLockTime) {
         attributes.put("timeLockTime", timeLockTime);
         attributes.put("timeLock", true);
     }
@@ -292,7 +302,7 @@ public abstract class WarMap implements Listener {
      *
      * @param matchDuration The maximum duration of the match.
      */
-    public void setMatchDuration(long matchDuration) {
+    protected void setMatchDuration(long matchDuration) {
         attributes.put("matchDuration", matchDuration);
     }
 
@@ -515,6 +525,7 @@ public abstract class WarMap implements Listener {
 
     /**
      * If block placing is disabled, blocks will disappear when placed.
+     * Also blocks building outside the defined boundary.
      *
      * @param event An event called by the server.
      */
@@ -522,5 +533,11 @@ public abstract class WarMap implements Listener {
     public void plc(BlockPlaceEvent event) {
         if (!(Boolean) attributes.get("blockPlace"))
             event.setCancelled(main.match().isAffected(event.getPlayer()));
+        else if (attributes.containsKey("boundary")) {
+            Location placed = event.getBlock().getLocation();
+            SerializedLocation bl = (SerializedLocation) attributes.get("bottomLeft");
+            SerializedLocation tr = (SerializedLocation) attributes.get("topRight");
+            event.setCancelled(main.match().isAffected(event.getPlayer()) && (placed.getX() < bl.x() || placed.getZ() < bl.z() || placed.getX() > tr.x() || placed.getZ() > tr.z()));
+        }
     }
 }

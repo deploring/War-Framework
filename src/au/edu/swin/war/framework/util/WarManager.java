@@ -5,6 +5,7 @@ import au.edu.swin.war.framework.WarPlugin;
 import au.edu.swin.war.framework.util.modules.ItemUtility;
 import au.edu.swin.war.framework.util.modules.StringUtility;
 import au.edu.swin.war.framework.util.modules.WorldUtility;
+import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;
@@ -181,5 +182,15 @@ public abstract class WarManager {
      */
     public WarPlayer getWarPlayer(UUID target) {
         return warPlayers.get(target);
+    }
+
+    /**
+     * Sends a TextComponent message to everyone online.
+     *
+     * @param comp Message to send.
+     */
+    public void broadcastSpigotMessage(TextComponent comp) {
+        for (WarPlayer online : getWarPlayers().values())
+            online.getPlayer().spigot().sendMessage(comp);
     }
 }

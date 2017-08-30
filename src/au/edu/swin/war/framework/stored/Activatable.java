@@ -10,8 +10,8 @@ package au.edu.swin.war.framework.stored;
  *
  * @author s101601828 @ Swin.
  * @version 1.0
- * <p>
- * Created by Josh on 27/03/2017.
+ *          <p>
+ *          Created by Josh on 27/03/2017.
  * @since 1.0
  */
 public interface Activatable {

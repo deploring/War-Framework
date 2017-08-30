@@ -1,7 +1,11 @@
 package au.edu.swin.war.framework.game;
 
+import net.md_5.bungee.api.chat.ComponentBuilder;
+import net.md_5.bungee.api.chat.HoverEvent;
+import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.ChatColor;
 import org.bukkit.scoreboard.Team;
+
 
 /**
  * This (non-extendable) class handles all
@@ -23,6 +27,10 @@ public final class WarTeam {
     private final Integer maxTeamSize;
     private final String scoreboardName;
     private Team bukkitTeam;
+
+    // Since the WarTeam is cloned upon usage, these variables reset.
+    private int kills;
+    private int deaths;
     /*  END RECORD  */
 
     /**
@@ -41,6 +49,8 @@ public final class WarTeam {
         this.maxTeamSize = maxTeamSize;
         this.scoreboardName = scoreboardName;
         this.bukkitTeam = null;
+        kills = 0;
+        deaths = 0;
     }
 
     /**
@@ -142,8 +152,21 @@ public final class WarTeam {
      *
      * @return Whether team is full or not.
      */
-    public boolean isFull(){
+    boolean isFull() {
         return bukkitTeam.getEntries().size() >= maxTeamSize;
+    }
+
+    /**
+     * Returns useful information for those who hover over the team name.
+     *
+     * @return Hover information.
+     */
+    public TextComponent getHoverInformation() {
+        TextComponent result = new TextComponent(getTeamColor() + "[" + getTeamName() + "]" + ChatColor.WHITE);
+        result.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
+                new ComponentBuilder("Members: " + getBukkitTeam().getEntries().size() + "/" + maxTeamSize +
+                        "\nKills: " + kills + "\nDeaths: " + deaths).create()));
+        return result;
     }
 
     /**
@@ -174,5 +197,19 @@ public final class WarTeam {
      */
     public String getDisplayName() {
         return getTeamColor() + getTeamName() + ChatColor.WHITE;
+    }
+
+    /**
+     * Adds a kill in favor of this team.
+     */
+    public void addKill() {
+        kills++;
+    }
+
+    /**
+     * Adds a death in spite of this team.
+     */
+    public void addDeath() {
+        deaths++;
     }
 }

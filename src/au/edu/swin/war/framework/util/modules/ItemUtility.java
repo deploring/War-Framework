@@ -134,14 +134,39 @@ public class ItemUtility {
      * @param currentTeam The user's current team.
      * @return The colored armor.
      * <p>
-     * Currently not used, but may used in the future?
-     * (-> no maps I added currently use this function)
      */
-    public ItemStack colorArmor(ItemStack armor, WarTeam currentTeam) {
+    private ItemStack colorArmor(ItemStack armor, WarTeam currentTeam) {
         LeatherArmorMeta meta = (LeatherArmorMeta) armor.getItemMeta(); // Gets the leather armor's specific meta.
         meta.setColor(convertChatToDye(currentTeam.getTeamColor())); // Sets the color of the leather armor.
         armor.setItemMeta(meta); // Apply our changes!
         return armor;
+    }
+
+    /**
+     * Colors supplied leather armor and applies it
+     * to the user automatically according to team color.
+     *
+     * @param dp    The player to apply the armor to.
+     * @param armor The armor supplied.
+     */
+    public void applyColoredArmorAccordingToTeam(WarPlayer dp, Material[] armor) {
+        for (Material toApply : armor) {
+            ItemStack result = colorArmor(new ItemStack(toApply), dp.getCurrentTeam());
+            switch (result.getType()) {
+                case LEATHER_BOOTS:
+                    dp.getPlayer().getInventory().setBoots(result);
+                    break;
+                case LEATHER_LEGGINGS:
+                    dp.getPlayer().getInventory().setLeggings(result);
+                    break;
+                case LEATHER_CHESTPLATE:
+                    dp.getPlayer().getInventory().setChestplate(result);
+                    break;
+                case LEATHER_HELMET:
+                    dp.getPlayer().getInventory().setHelmet(result);
+                    break;
+            }
+        }
     }
 
     /**

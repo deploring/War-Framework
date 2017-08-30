@@ -86,15 +86,15 @@ public abstract class WarCache extends WarModule {
 
     /**
      * Finds a team based on an incomplete or complete word.
-     *
+     * <p>
      * For example: ['Red Team', 'Blue Team']
-     *
+     * <p>
      * Input of 'bl' or 'Bl' -> 'Blue Team'
      * Input of 'r' -> 'Red Team'
      *
      * @param preference The team to try and find.
      * @return The team found, if any.
-     *
+     * <p>
      * (this function was for debugging purposes)
      * (might have a use later or no?)
      */
