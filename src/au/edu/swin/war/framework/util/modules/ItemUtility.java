@@ -2,6 +2,7 @@ package au.edu.swin.war.framework.util.modules;
 
 import au.edu.swin.war.framework.WarPlayer;
 import au.edu.swin.war.framework.game.WarTeam;
+import org.apache.commons.lang.WordUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
 import org.bukkit.Material;
@@ -76,14 +77,11 @@ public class ItemUtility {
      * @param stack The ItemStack to change.
      * @param name  The ItemStack's name.
      * @param lore  The ItemStack's lore.
-     *              <p>
-     *              Currently not used, but may used in the future?
-     *              (-> no maps I added currently use this function)
      */
-    private ItemStack changeItem(ItemStack stack, String name, Object[] lore) {
+    public ItemStack changeItem(ItemStack stack, String name, Object[] lore) {
         ArrayList<String> loreList = new ArrayList<>();
         for (Object st : lore)
-            loreList.add(ChatColor.GOLD + "" + st);
+            loreList.add(st.toString());
         return changeItem(stack, name, loreList);
         // For statement documentation, check the below function.
     }
@@ -99,7 +97,7 @@ public class ItemUtility {
     private ItemStack changeItem(ItemStack stack, String name, ArrayList<String> lore) {
         ItemMeta meta = stack.getItemMeta(); // Gets an ItemStack's meta (which holds display names, lore, etc.)
         if (name != null)
-            meta.setDisplayName(ChatColor.RED + name); // Set the display name if it isn't null.
+            meta.setDisplayName(ChatColor.BLUE + name); // Set the display name if it isn't null.
         if (lore != null)
             meta.setLore(lore); // Set the lore if it isn't null.
         stack.setItemMeta(meta); // Apply our changes!
@@ -136,34 +134,36 @@ public class ItemUtility {
      * <p>
      */
     private ItemStack colorArmor(ItemStack armor, WarTeam currentTeam) {
-        LeatherArmorMeta meta = (LeatherArmorMeta) armor.getItemMeta(); // Gets the leather armor's specific meta.
-        meta.setColor(convertChatToDye(currentTeam.getTeamColor())); // Sets the color of the leather armor.
-        armor.setItemMeta(meta); // Apply our changes!
+        if (armor.getType().toString().startsWith("LEATHER")) {
+            LeatherArmorMeta meta = (LeatherArmorMeta) armor.getItemMeta(); // Gets the leather armor's specific meta.
+            meta.setColor(convertChatToDye(currentTeam.getTeamColor())); // Sets the color of the leather armor.
+            armor.setItemMeta(meta); // Apply our changes!
+        }
         return armor;
     }
 
     /**
-     * Colors supplied leather armor and applies it
+     * Colors supplied armor (if leather) and applies it
      * to the user automatically according to team color.
      *
      * @param dp    The player to apply the armor to.
      * @param armor The armor supplied.
      */
-    public void applyColoredArmorAccordingToTeam(WarPlayer dp, Material[] armor) {
+    public void applyArmorAcccordingToTeam(WarPlayer dp, Material[] armor) {
         for (Material toApply : armor) {
             ItemStack result = colorArmor(new ItemStack(toApply), dp.getCurrentTeam());
-            switch (result.getType()) {
-                case LEATHER_BOOTS:
-                    dp.getPlayer().getInventory().setBoots(result);
+            switch (toApply.toString().split("_")[1]) {
+                case "HELMET":
+                    dp.getPlayer().getInventory().setHelmet(result);
                     break;
-                case LEATHER_LEGGINGS:
-                    dp.getPlayer().getInventory().setLeggings(result);
-                    break;
-                case LEATHER_CHESTPLATE:
+                case "CHESTPLATE":
                     dp.getPlayer().getInventory().setChestplate(result);
                     break;
-                case LEATHER_HELMET:
-                    dp.getPlayer().getInventory().setHelmet(result);
+                case "LEGGINGS":
+                    dp.getPlayer().getInventory().setLeggings(result);
+                    break;
+                case "BOOTS":
+                    dp.getPlayer().getInventory().setBoots(result);
                     break;
             }
         }
@@ -195,13 +195,30 @@ public class ItemUtility {
      * @param amplifier Strength.
      * @return The potion.
      * <p>
-     * Currently not used, but may used in the future?
-     * (-> no maps I added currently use this function)
      */
-    public ItemStack createPotion(PotionEffectType type, int duration, int amplifier) {
-        ItemStack POTION = new ItemStack(Material.POTION); // Creates a potion with no ingredients.
+    public ItemStack createPotion(PotionEffectType type, int duration, int amplifier, int amount) {
+        ItemStack POTION = new ItemStack(Material.POTION, amount); // Creates a potion with no ingredients.
         PotionMeta meta = (PotionMeta) POTION.getItemMeta(); // Gets the potion's specific meta.
         meta.addCustomEffect(new PotionEffect(type, duration, amplifier), true); // Adds the custom effect.
+        meta.setDisplayName(ChatColor.WHITE + "Potion of " + WordUtils.capitalize(type.getName().replace("_", " ").toLowerCase())); // Don't show it as uncraftable.
+        POTION.setItemMeta(meta); // Apply our changes!
+        return POTION;
+    }
+
+    /**
+     * Creates a tipped arrow.
+     *
+     * @param type      Potion effect type.
+     * @param duration  Duration.
+     * @param amplifier Strength.
+     * @return The arrow.
+     */
+    public ItemStack createTippedArrow(PotionEffectType type, int duration, int amplifier, int amount) {
+        ItemStack POTION = new ItemStack(Material.TIPPED_ARROW, amount); // Creates a tipped arrow with no ingredients.
+        PotionMeta meta = (PotionMeta) POTION.getItemMeta(); // Gets the arrow's specific meta.
+        meta.addCustomEffect(new PotionEffect(type, duration, amplifier), true); // Add the custom effect.
+        meta.setColor(type.getColor()); // Set the color.
+        meta.setDisplayName(ChatColor.WHITE + "Tipped Arrow of " + WordUtils.capitalize(type.getName().replace("_", " ").toLowerCase())); // Don't show it as uncraftable.
         POTION.setItemMeta(meta); // Apply our changes!
         return POTION;
     }

@@ -163,9 +163,7 @@ public final class WarTeam {
      */
     public TextComponent getHoverInformation() {
         TextComponent result = new TextComponent(getTeamColor() + "[" + getTeamName() + "]" + ChatColor.WHITE);
-        result.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
-                new ComponentBuilder("Members: " + getBukkitTeam().getEntries().size() + "/" + maxTeamSize +
-                        "\nKills: " + kills + "\nDeaths: " + deaths).create()));
+        result.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("Members: " + getBukkitTeam().getEntries().size() + "/" + maxTeamSize + "\nKills: " + kills + "\nDeaths: " + deaths).create()));
         return result;
     }
 

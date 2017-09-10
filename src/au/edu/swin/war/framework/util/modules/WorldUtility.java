@@ -4,6 +4,7 @@ package au.edu.swin.war.framework.util.modules;
 import au.edu.swin.war.framework.util.WarManager;
 import au.edu.swin.war.framework.util.WarModule;
 import net.minecraft.server.v1_12_R1.WorldServer;
+import org.apache.commons.io.FileUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -15,7 +16,6 @@ import org.bukkit.inventory.ItemStack;
 
 import java.io.*;
 import java.lang.reflect.Field;
-import java.nio.file.Files;
 import java.util.Map;
 import java.util.Random;
 
@@ -165,7 +165,7 @@ public class WorldUtility extends WarModule {
                     delete(f); // Delete any files in the directory first.
         }
         // We can delete it now.
-        Files.delete(path.toPath());
+        FileUtils.forceDelete(path);
     }
 
     /**
