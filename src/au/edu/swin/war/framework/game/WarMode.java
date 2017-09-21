@@ -1,6 +1,8 @@
 package au.edu.swin.war.framework.game;
 
 import au.edu.swin.war.framework.WarPlayer;
+import au.edu.swin.war.framework.event.MatchPlayerJoinEvent;
+import au.edu.swin.war.framework.event.MatchPlayerLeaveEvent;
 import au.edu.swin.war.framework.stored.SerializedLocation;
 import au.edu.swin.war.framework.util.WarManager;
 import au.edu.swin.war.framework.util.WarMatch;
@@ -530,6 +532,7 @@ public abstract class WarMode implements Listener {
         } else if (wp.isJoined()) {
             // Assign the player to their team and call onJoin() for the external class.
             carryOutTeam(wp, getSmallestTeam());
+            main.plugin().getServer().getPluginManager().callEvent(new MatchPlayerJoinEvent(wp)); // Call an event.
         } else { // If the player did not join, execute a leaving handle.
             if (!permaDeath)
                 pl.sendMessage("You have left the match!"); // Alert the player physically if this is not a permadeath match.
@@ -542,6 +545,7 @@ public abstract class WarMode implements Listener {
             main.items().clear(wp); // Clears the player's inventory.
             main.giveSpectatorKit(wp); // Gives the player a spectator kit.
             onLeave(wp); // Calls onLeave() for the external class.
+            main.plugin().getServer().getPluginManager().callEvent(new MatchPlayerLeaveEvent(wp)); // Call an event.
         }
     }
 
