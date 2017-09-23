@@ -403,6 +403,24 @@ public abstract class WarMap implements Listener {
     }
 
     /**
+     * Marks this map as set out of rotation or not.
+     *
+     * @param wasSet Was set?
+     */
+    public void setWasSet(boolean wasSet) {
+        this.wasSet = wasSet;
+    }
+
+    /**
+     * Returns whether or not this map was force set.
+     *
+     * @return Was set?
+     */
+    public boolean wasSet() {
+        return wasSet;
+    }
+
+    /**
      * Sets the creators of this map. Please ensure you know how
      * universially unique idenfiers work and how to get your IGN's
      * UUID.

@@ -109,4 +109,27 @@ public abstract class WarCache extends WarModule {
         }
         return found;
     }
+
+    /**
+     * Finds a map based on an incomplete or complete word.
+     * <p>
+     * For example: ['Map One', 'Cool Map Two']
+     * <p>
+     * Input of 'p tw' or 'two' -> 'Cool Map Two'
+     * Input of 'on' -> 'Map One'
+     *
+     * @param preference The map to try and find.
+     * @return The map found, if any.
+     */
+    public WarMap matchMap(String preference) {
+        WarMap found = null;
+        if (preference == null) return null;
+        for (WarMap map : maps.values()) {
+            if (map.getMapName().toLowerCase().startsWith(preference.toLowerCase())) {
+                found = map;
+                break;
+            }
+        }
+        return found;
+    }
 }
