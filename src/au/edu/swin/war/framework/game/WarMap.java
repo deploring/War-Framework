@@ -8,6 +8,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Hanging;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.*;
 import org.bukkit.event.entity.EntityDamageEvent;
@@ -248,6 +249,15 @@ public abstract class WarMap implements Listener {
     protected void setTimeLockTime(long timeLockTime) {
         attributes.put("timeLockTime", timeLockTime);
         attributes.put("timeLock", true);
+    }
+
+    /**
+     * Sets the maximum Y the players can build up to.
+     *
+     * @param y Skybox Y.
+     */
+    protected void setBuildHeight(int y) {
+        attr().put("buildHeight", y);
     }
 
     /**
@@ -535,10 +545,15 @@ public abstract class WarMap implements Listener {
      *
      * @param event An event called by the server.
      */
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void brk(BlockBreakEvent event) {
-        if (!(Boolean) attributes.get("blockBreak"))
-            event.setCancelled(main.match().isAffected(event.getPlayer()));
+        if (event.isCancelled()) return;
+        if (!(Boolean) attributes.get("blockBreak")) {
+            if (main.match().isAffected(event.getPlayer())) {
+                event.setCancelled(true);
+                main.warn(event.getPlayer(), "You can't build on this map.");
+            }
+        }
     }
 
     /**
@@ -547,15 +562,36 @@ public abstract class WarMap implements Listener {
      *
      * @param event An event called by the server.
      */
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void plc(BlockPlaceEvent event) {
-        if (!(Boolean) attributes.get("blockPlace"))
-            event.setCancelled(main.match().isAffected(event.getPlayer()));
-        else if (attributes.containsKey("boundary")) {
+        if (event.isCancelled()) return;
+        if (!(Boolean) attributes.get("blockPlace")) {
+            if (main.match().isAffected(event.getPlayer())) {
+                event.setCancelled(true);
+                main.warn(event.getPlayer(), "You can't build on this map.");
+            }
+        } else if (attributes.containsKey("boundary")) {
             Location placed = event.getBlock().getLocation();
             SerializedLocation bl = (SerializedLocation) attributes.get("bottomLeft");
             SerializedLocation tr = (SerializedLocation) attributes.get("topRight");
-            event.setCancelled(main.match().isAffected(event.getPlayer()) && (placed.getX() < bl.x() || placed.getZ() < bl.z() || placed.getX() > tr.x() || placed.getZ() > tr.z()));
+            if (main.match().isAffected(event.getPlayer()) && (placed.getX() < bl.x() || placed.getZ() < bl.z() || placed.getX() > tr.x() || placed.getZ() > tr.z())) {
+                event.setCancelled(true);
+                main.warn(event.getPlayer(), "Build inside the map border!");
+            }
+        } else if (attributes.containsKey("plateau")) {
+            int plateauY = (int) attributes.get("plateau");
+            Location equiv = event.getBlock().getLocation().clone();
+            equiv.setY(plateauY);
+            if (equiv.getBlock().getType() != Material.BEDROCK) {
+                event.setCancelled(true);
+                main.warn(event.getPlayer(), "Build inside the map border!");
+            }
+        } else if (attributes.containsKey("buildHeight")) {
+            int buildHeight = (int) attributes.get("buildHeight");
+            if (event.getBlock().getY() > buildHeight) {
+                event.setCancelled(true);
+                main.warn(event.getPlayer(), "You can't build any higher.");
+            }
         }
     }
 }

@@ -7,7 +7,10 @@ import au.edu.swin.war.framework.stored.SerializedLocation;
 import au.edu.swin.war.framework.util.WarManager;
 import au.edu.swin.war.framework.util.WarMatch;
 import net.md_5.bungee.api.chat.TextComponent;
-import org.bukkit.*;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.GameMode;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
@@ -366,13 +369,6 @@ public abstract class WarMode implements Listener {
         initializeCommon(); // Initializes common values in the extended gamemode class.
         initialize(); // Initializes everything in the external gamemode class!
 
-        // Pre-round attribute assignment
-        if (map.attr().containsKey("timeLock")) {
-            World world = main.match().getCurrentWorld();
-            world.setGameRuleValue("doDaylightCycle", "false");
-            world.setFullTime((Long) map.attr().get("timeLockTime"));
-        }
-
         // Defines the plugin executing the timer and the runnable interface. (Spigot)
         runtimeTask = Bukkit.getScheduler().runTaskTimer( // Runs a task timer at a regular interval. (Spigot)
                 main.plugin(), () -> {
@@ -520,9 +516,10 @@ public abstract class WarMode implements Listener {
      * If the player leaves, disassociate them and call onLeave();
      * If the match is permadeath, do not message the player.
      *
-     * @param wp The player to handle.
+     * @param wp         The player to handle.
+     * @param preference What team the player would like to be on. (if supplied)
      */
-    public void entryHandle(WarPlayer wp) {
+    public void entryHandle(WarPlayer wp, WarTeam... preference) {
         Player pl = wp.getPlayer(); // Returns Spigot's implementation of Player. (Spigot)
         if (!isActive()) return; // If this gamemode is not active, do not execute anything.
         if (permaDeath && wp.isJoined()) {
@@ -531,7 +528,10 @@ public abstract class WarMode implements Listener {
             wp.setJoined(false);
         } else if (wp.isJoined()) {
             // Assign the player to their team and call onJoin() for the external class.
-            carryOutTeam(wp, getSmallestTeam());
+            if (preference != null && preference.length == 1)
+                carryOutTeam(wp, preference[0]);
+            else
+                carryOutTeam(wp, getSmallestTeam());
             main.plugin().getServer().getPluginManager().callEvent(new MatchPlayerJoinEvent(wp)); // Call an event.
         } else { // If the player did not join, execute a leaving handle.
             if (!permaDeath)

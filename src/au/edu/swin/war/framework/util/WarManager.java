@@ -150,6 +150,13 @@ public abstract class WarManager {
     public abstract void giveSpectatorKit(WarPlayer wp);
 
     /**
+     * Checks if a player can be warned, and then warns them.
+     *
+     * @param whoWasWarned Who was warned. (lol)
+     */
+    public abstract void warn(Player whoWasWarned, String warning);
+
+    /**
      * Removes the instance of a WarPlayer.
      * This should always be called on the
      * targeted player's disconnect from the server.
@@ -183,6 +190,7 @@ public abstract class WarManager {
     public WarPlayer getWarPlayer(UUID target) {
         return warPlayers.get(target);
     }
+
 
     /**
      * Sends a TextComponent message to everyone online.

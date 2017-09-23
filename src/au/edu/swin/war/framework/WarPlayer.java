@@ -37,6 +37,7 @@ public final class WarPlayer {
         this.currentTeam = null;
         this.joined = false;
         this.manager = manager;
+        changeVisibility();
     }
 
     /**
