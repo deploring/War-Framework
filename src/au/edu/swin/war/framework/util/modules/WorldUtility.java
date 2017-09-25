@@ -59,8 +59,10 @@ public class WorldUtility extends WarModule {
     public void loadMap(String map, long ID) {
         main().plugin().log("Now attempting to load " + map + " to " + ID + "!"); // Debug.
         try {
+            File path = new File(repo + File.separator + map);
+            main().plugin().log("Maps repo path: " + path);
             // Non-absolute paths will default to inside the plugin folder.
-            copyFolder(new File(repo.startsWith(File.separator) ? "" : (main().plugin().getDataFolder() + File.separator) + repo + File.separator + map), new File(ID + ""));
+            copyFolder(path, new File(ID + ""));
             // Attempts to copy over the whole directory so it can be used.
         } catch (IOException e) {
             e.printStackTrace();
