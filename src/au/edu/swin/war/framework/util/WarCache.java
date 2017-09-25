@@ -115,8 +115,8 @@ public abstract class WarCache extends WarModule {
      * <p>
      * For example: ['Map One', 'Cool Map Two']
      * <p>
-     * Input of 'p tw' or 'two' -> 'Cool Map Two'
-     * Input of 'on' -> 'Map One'
+     * Input of 'cool' or 'cool m' -> 'Cool Map Two'
+     * Input of 'ma' -> 'Map One'
      *
      * @param preference The map to try and find.
      * @return The map found, if any.

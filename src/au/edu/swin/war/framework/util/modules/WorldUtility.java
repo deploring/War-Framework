@@ -33,6 +33,8 @@ import java.util.Random;
  */
 public class WorldUtility extends WarModule {
 
+    private String repo; // Holds the directory path to the map repository.
+
     /**
      * World utility constructor.
      * We need to link back to the manager and plugin.
@@ -41,6 +43,7 @@ public class WorldUtility extends WarModule {
      */
     public WorldUtility(WarManager main) {
         super(main);
+        repo = main.plugin().getConfig().getString("settings.maps_repo");
     }
 
     /**
@@ -56,8 +59,9 @@ public class WorldUtility extends WarModule {
     public void loadMap(String map, long ID) {
         main().plugin().log("Now attempting to load " + map + " to " + ID + "!"); // Debug.
         try {
-            copyFolder(new File(main().plugin().getDataFolder() + File.separator + "maps" + File.separator + map), new File(ID + ""));
-            // Atempts to copy over the whole directory so it can be used.
+            // Non-absolute paths will default to inside the plugin folder.
+            copyFolder(new File(repo.startsWith(File.separator) ? "" : (main().plugin().getDataFolder() + File.separator) + repo + File.separator + map), new File(ID + ""));
+            // Attempts to copy over the whole directory so it can be used.
         } catch (IOException e) {
             e.printStackTrace();
             main().plugin().getServer().shutdown(); // Can't play without a world.

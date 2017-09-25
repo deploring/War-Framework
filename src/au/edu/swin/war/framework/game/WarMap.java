@@ -49,7 +49,6 @@ public abstract class WarMap implements Listener {
     /* Do not interfere with these values! */
     protected WarManager main; // The WarManager instance. This allows access to all other crucial modules.
     protected SerializedLocation specSpawn; // The location at which all spectators will initially spawn.
-    boolean wasSet = false; // Was this map manually set out of rotation? //TODO: Remove this, no longer needed
     private boolean active = false; // Specified if this map is currently being played.
     /* Designation attributes. */
     private UUID[] creators = new UUID[]{}; // An array of map creator UUIDs, if applicable.
@@ -410,24 +409,6 @@ public abstract class WarMap implements Listener {
      */
     public UUID[] getCreators() {
         return creators;
-    }
-
-    /**
-     * Marks this map as set out of rotation or not.
-     *
-     * @param wasSet Was set?
-     */
-    public void setWasSet(boolean wasSet) {
-        this.wasSet = wasSet;
-    }
-
-    /**
-     * Returns whether or not this map was force set.
-     *
-     * @return Was set?
-     */
-    public boolean wasSet() {
-        return wasSet;
     }
 
     /**

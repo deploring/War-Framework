@@ -288,7 +288,7 @@ public abstract class WarMode implements Listener {
      *
      * @return The amount of time elapsed.
      */
-    protected int getTimeElapsed() {
+    public int getTimeElapsed() {
         return timeElapsed;
     }
 
@@ -296,7 +296,7 @@ public abstract class WarMode implements Listener {
      * Sets -specifically- the amount of time elapsed
      * in the match. Mainly for debugging purposes.
      */
-    protected void setTimeElapsed(int timeElapsed) {
+    public void setTimeElapsed(int timeElapsed) {
         this.timeElapsed = timeElapsed;
     }
 
