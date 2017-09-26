@@ -1,6 +1,7 @@
 package au.edu.swin.war.framework.game;
 
 import au.edu.swin.war.framework.WarPlayer;
+import au.edu.swin.war.framework.event.MatchEndEvent;
 import au.edu.swin.war.framework.event.MatchPlayerJoinEvent;
 import au.edu.swin.war.framework.event.MatchPlayerLeaveEvent;
 import au.edu.swin.war.framework.stored.SerializedLocation;
@@ -266,6 +267,7 @@ public abstract class WarMode implements Listener {
      * i.e. reaching score cap in FFA, etc.
      */
     private void finish() {
+        main.plugin().getServer().getPluginManager().callEvent(new MatchEndEvent()); // Call a custom event.
         setActive(false); // Sets the gamemode instance to inactive.
         if (teamSpawns != null)
             teamSpawns.clear(); // CLEAR the Key/Value set, do not free it.
@@ -398,7 +400,7 @@ public abstract class WarMode implements Listener {
 
                     tick(); // Allows the external class to execute certain procedures every second too.
 
-                    if (getTimeElapsed() == getMatchDuration())
+                    if (getTimeElapsed() >= getMatchDuration())
                         onEnd(); // If the time is up, end the match even if the objective is not complete.
                 }, 0L, 20L); // Have a 0 tick delay before starting the task, and repeat every 20 ticks.
         // ! IMPORTANT ! A 'tick' is a 20th of a second. Minecraft servers run at 20 ticks per second. (TPS)

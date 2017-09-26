@@ -19,7 +19,7 @@ import org.bukkit.entity.Player;
  * Created by Josh on 20/03/2017.
  * @since 1.0
  */
-public final class WarPlayer {
+public abstract class WarPlayer {
 
     private final Player player; // The Spigot's player implementation
     private WarTeam currentTeam; // The team the player is currently on
