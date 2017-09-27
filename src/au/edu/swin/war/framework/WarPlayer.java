@@ -24,7 +24,7 @@ public abstract class WarPlayer {
     private final Player player; // The Spigot's player implementation
     private WarTeam currentTeam; // The team the player is currently on
     private boolean joined; // Whether or not the player is marked as joined
-    private WarManager manager; // Instance of the supercontroller.
+    protected final WarManager manager; // Instance of the supercontroller.
 
     /**
      * Constructor for WarPlayer class.
@@ -38,6 +38,7 @@ public abstract class WarPlayer {
         this.joined = false;
         this.manager = manager;
         changeVisibility();
+        update();
     }
 
     /**
@@ -77,6 +78,7 @@ public abstract class WarPlayer {
     public void setCurrentTeam(WarTeam newTeam) {
         this.currentTeam = newTeam;
         changeVisibility();
+        update();
     }
 
     /**
@@ -144,12 +146,12 @@ public abstract class WarPlayer {
     }
 
     /**
-     * Returns thei player's IGN colored with their team color.
+     * Returns the player's display name.
      *
-     * @return The colored player name.
+     * @return Display name.
      */
-    public String getTeamName() {
-        return getCurrentTeam().getTeamColor() + getName() + ChatColor.WHITE;
+    public String getDisplayName() {
+        return getPlayer().getDisplayName();
     }
 
     /**
@@ -160,5 +162,12 @@ public abstract class WarPlayer {
      */
     public boolean isPlaying() {
         return currentTeam != null;
+    }
+
+    /**
+     * If something needs to be updated whenever a player's
+     * color may change, override this method to do so.
+     */
+    public void update(){
     }
 }

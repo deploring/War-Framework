@@ -87,13 +87,11 @@ public abstract class WarPlugin extends JavaPlugin implements Listener {
          Commands are specific statements executed by players.
          An example command is /join, which sets the player as 'joined.
          */
-        commands = new com.sk89q.minecraft.util.commands.CommandsManager<CommandSender>() {
+        commands = new CommandsManager<CommandSender>() {
             @Override
-            public boolean hasPermission(CommandSender player, String perm) {
+            public boolean hasPermission(CommandSender sender, String perm) {
                 // Simple function to check whether or not the player has a permission.
-                // OPs cannot bypass this permission check.
-                Permission truePerm = new Permission(perm, PermissionDefault.FALSE);
-                return player instanceof ConsoleCommandSender || player.hasPermission(truePerm);
+                return WarPlugin.this.hasPermission(sender, perm);
             }
         };
 
@@ -162,5 +160,18 @@ public abstract class WarPlugin extends JavaPlugin implements Listener {
             sender.sendMessage(ChatColor.RED + e.getMessage());
         }
         return true;
+    }
+
+    /**
+     * Checks if this sender has permission.
+     * Cannot be bypassed with OP.
+     *
+     * @param sender Sender to check for.
+     * @param perm   Permission to check for.
+     * @return Do they have this permission?
+     */
+    public boolean hasPermission(CommandSender sender, String perm) {
+        Permission truePerm = new Permission(perm, PermissionDefault.FALSE);
+        return sender instanceof ConsoleCommandSender || sender.hasPermission(truePerm);
     }
 }

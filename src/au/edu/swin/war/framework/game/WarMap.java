@@ -412,6 +412,28 @@ public abstract class WarMap implements Listener {
     }
 
     /**
+     * Handy little method that creates a UUID from a string.
+     *
+     * @param fromString String to make UUID from.
+     * @return Resulting UUID.
+     */
+    protected UUID id(String fromString) {
+        return UUID.fromString(fromString);
+    }
+
+    /**
+     * Checks if a UUID is also a creator of this map.
+     *
+     * @param uuid UUID to check.
+     * @return Are they a creator?
+     */
+    public boolean isCreator(UUID uuid) {
+        for (UUID toCompare : getCreators())
+            if (toCompare.equals(uuid)) return true;
+        return false;
+    }
+
+    /**
      * Sets the creators of this map. Please ensure you know how
      * universially unique idenfiers work and how to get your IGN's
      * UUID.
