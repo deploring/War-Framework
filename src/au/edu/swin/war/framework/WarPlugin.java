@@ -6,7 +6,10 @@ import com.sk89q.minecraft.util.commands.*;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.event.Listener;
+import org.bukkit.permissions.Permission;
+import org.bukkit.permissions.PermissionDefault;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.ArrayList;
@@ -88,8 +91,9 @@ public abstract class WarPlugin extends JavaPlugin implements Listener {
             @Override
             public boolean hasPermission(CommandSender player, String perm) {
                 // Simple function to check whether or not the player has a permission.
-                // Permissions are external, and for all intents and purposes, are not used.
-                return player.hasPermission(perm);
+                // OPs cannot bypass this permission check.
+                Permission truePerm = new Permission(perm, PermissionDefault.FALSE);
+                return player instanceof ConsoleCommandSender || player.hasPermission(truePerm);
             }
         };
 

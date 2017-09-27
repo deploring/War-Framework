@@ -2,6 +2,8 @@ package au.edu.swin.war.framework.util.modules;
 
 import au.edu.swin.war.framework.WarPlayer;
 import au.edu.swin.war.framework.game.WarTeam;
+import au.edu.swin.war.framework.util.WarManager;
+import au.edu.swin.war.framework.util.WarModule;
 import org.apache.commons.lang.WordUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
@@ -30,7 +32,11 @@ import java.util.ArrayList;
  * @since 1.0
  */
 @SuppressWarnings("unused")
-public class ItemUtility {
+public class ItemUtility extends WarModule {
+
+    public ItemUtility(WarManager main) {
+        super(main);
+    }
 
     /**
      * Checks if an inventory is empty.
@@ -97,7 +103,7 @@ public class ItemUtility {
     private ItemStack changeItem(ItemStack stack, String name, ArrayList<String> lore) {
         ItemMeta meta = stack.getItemMeta(); // Gets an ItemStack's meta (which holds display names, lore, etc.)
         if (name != null)
-            meta.setDisplayName(ChatColor.BLUE + name); // Set the display name if it isn't null.
+            meta.setDisplayName(ChatColor.RED + name); // Set the display name if it isn't null.
         if (lore != null)
             meta.setLore(lore); // Set the lore if it isn't null.
         stack.setItemMeta(meta); // Apply our changes!
@@ -126,7 +132,7 @@ public class ItemUtility {
 
     /**
      * Colors an item depending on the user's current team.
-     * !IMPORTANT! Only use leather armor please.
+     * Ignores non-leather armor.
      *
      * @param armor       The armor piece to color.
      * @param currentTeam The user's current team.
@@ -134,7 +140,7 @@ public class ItemUtility {
      * <p>
      */
     private ItemStack colorArmor(ItemStack armor, WarTeam currentTeam) {
-        if (armor.getType().toString().startsWith("LEATHER")) {
+        if (armor.getType().toString().startsWith("LEATHER_")) {
             LeatherArmorMeta meta = (LeatherArmorMeta) armor.getItemMeta(); // Gets the leather armor's specific meta.
             meta.setColor(convertChatToDye(currentTeam.getTeamColor())); // Sets the color of the leather armor.
             armor.setItemMeta(meta); // Apply our changes!
@@ -199,8 +205,9 @@ public class ItemUtility {
     public ItemStack createPotion(PotionEffectType type, int duration, int amplifier, int amount) {
         ItemStack POTION = new ItemStack(Material.POTION, amount); // Creates a potion with no ingredients.
         PotionMeta meta = (PotionMeta) POTION.getItemMeta(); // Gets the potion's specific meta.
-        meta.addCustomEffect(new PotionEffect(type, duration, amplifier), true); // Adds the custom effect.
-        meta.setDisplayName(ChatColor.WHITE + "Potion of " + WordUtils.capitalize(type.getName().replace("_", " ").toLowerCase())); // Don't show it as uncraftable.
+        PotionEffect effect = new PotionEffect(type, duration, amplifier); // Create the custom effect.
+        meta.addCustomEffect(effect, true); // Add the custom effect.
+        meta.setDisplayName(ChatColor.WHITE + "Potion of " + main().strings().potionEffect(effect)); // Don't show it as uncraftable.
         POTION.setItemMeta(meta); // Apply our changes!
         return POTION;
     }
@@ -214,13 +221,14 @@ public class ItemUtility {
      * @return The arrow.
      */
     public ItemStack createTippedArrow(PotionEffectType type, int duration, int amplifier, int amount) {
-        ItemStack POTION = new ItemStack(Material.TIPPED_ARROW, amount); // Creates a tipped arrow with no ingredients.
-        PotionMeta meta = (PotionMeta) POTION.getItemMeta(); // Gets the arrow's specific meta.
-        meta.addCustomEffect(new PotionEffect(type, duration, amplifier), true); // Add the custom effect.
+        ItemStack ARROW = new ItemStack(Material.TIPPED_ARROW, amount); // Creates a tipped arrow with no ingredients.
+        PotionMeta meta = (PotionMeta) ARROW.getItemMeta(); // Gets the arrow's specific meta.
+        PotionEffect effect = new PotionEffect(type, duration, amplifier); // Create the custom effect.
+        meta.addCustomEffect(effect, true); // Add the custom effect.
         meta.setColor(type.getColor()); // Set the color.
-        meta.setDisplayName(ChatColor.WHITE + "Tipped Arrow of " + WordUtils.capitalize(type.getName().replace("_", " ").toLowerCase())); // Don't show it as uncraftable.
-        POTION.setItemMeta(meta); // Apply our changes!
-        return POTION;
+        meta.setDisplayName(ChatColor.WHITE + "Potion of " + main().strings().potionEffect(effect)); // Don't show it as uncraftable.
+        ARROW.setItemMeta(meta); // Apply our changes!
+        return ARROW;
     }
 
     /**

@@ -46,7 +46,7 @@ public abstract class WarManager {
     public WarManager(WarPlugin plugin) {
         this.plugin = plugin;
         this.warPlayers = new HashMap<>();
-        this.itemutil = new ItemUtility();
+        this.itemutil = new ItemUtility(this);
         this.strutil = new StringUtility(this);
         this.wrldutil = new WorldUtility(this);
     }

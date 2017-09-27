@@ -7,8 +7,12 @@ import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 /**
@@ -24,6 +28,8 @@ import java.util.Random;
  */
 public class StringUtility extends WarModule {
 
+    private Map<PotionEffectType, String> effects = new HashMap<>();
+
     /**
      * String utility constructor.
      * We need to link back to the manager and plugin.
@@ -32,6 +38,29 @@ public class StringUtility extends WarModule {
      */
     public StringUtility(WarManager main) {
         super(main);
+        effects.put(PotionEffectType.ABSORPTION, "Absorption");
+        effects.put(PotionEffectType.BLINDNESS, "Blindness");
+        effects.put(PotionEffectType.CONFUSION, "Nausea");
+        effects.put(PotionEffectType.DAMAGE_RESISTANCE, "Resistance");
+        effects.put(PotionEffectType.FAST_DIGGING, "Haste");
+        effects.put(PotionEffectType.FIRE_RESISTANCE, "Fire Resistance");
+        effects.put(PotionEffectType.HARM, "Instant Damage");
+        effects.put(PotionEffectType.HEAL, "Instant Health");
+        effects.put(PotionEffectType.HEALTH_BOOST, "Health Boost");
+        effects.put(PotionEffectType.HUNGER, "Hunger");
+        effects.put(PotionEffectType.INCREASE_DAMAGE, "Strength");
+        effects.put(PotionEffectType.INVISIBILITY, "Invisibility");
+        effects.put(PotionEffectType.JUMP, "Jump Boost");
+        effects.put(PotionEffectType.NIGHT_VISION, "Night Vision");
+        effects.put(PotionEffectType.POISON, "Poison");
+        effects.put(PotionEffectType.REGENERATION, "Regeneration");
+        effects.put(PotionEffectType.SATURATION, "Saturation");
+        effects.put(PotionEffectType.SLOW, "Slowness");
+        effects.put(PotionEffectType.SLOW_DIGGING, "Mining Fatigue");
+        effects.put(PotionEffectType.SPEED, "Speed");
+        effects.put(PotionEffectType.WATER_BREATHING, "Water Breathing");
+        effects.put(PotionEffectType.WEAKNESS, "Weakness");
+        effects.put(PotionEffectType.WITHER, "Wither");
     }
 
     /**
@@ -149,38 +178,84 @@ public class StringUtility extends WarModule {
      * @return The matching Color.
      */
     public Color convertChatToDye(ChatColor color) {
-        if (color == ChatColor.AQUA)
-            return Color.AQUA;
-        else if (color == ChatColor.BLACK)
-            return Color.BLACK;
-        else if (color == ChatColor.BLUE)
-            return Color.BLUE;
-        else if (color == ChatColor.DARK_AQUA)
-            return Color.TEAL;
-        else if (color == ChatColor.DARK_BLUE)
-            return Color.NAVY;
-        else if (color == ChatColor.DARK_GRAY)
-            return Color.GRAY;
-        else if (color == ChatColor.DARK_GREEN)
-            return Color.GREEN;
-        else if (color == ChatColor.DARK_PURPLE)
-            return Color.PURPLE;
-        else if (color == ChatColor.DARK_RED)
-            return Color.MAROON;
-        else if (color == ChatColor.GOLD)
-            return Color.ORANGE;
-        else if (color == ChatColor.GRAY)
-            return Color.GRAY;
-        else if (color == ChatColor.GREEN)
-            return Color.LIME;
-        else if (color == ChatColor.LIGHT_PURPLE)
-            return Color.FUCHSIA;
-        else if (color == ChatColor.RED)
-            return Color.RED;
-        else if (color == ChatColor.YELLOW)
-            return Color.YELLOW;
-        else if (color == ChatColor.WHITE)
-            return Color.WHITE;
-        else return Color.WHITE;
+        switch (color) {
+            case AQUA:
+                return Color.AQUA;
+            case BLACK:
+                return Color.BLACK;
+            case BLUE:
+                return Color.BLUE;
+            case DARK_AQUA:
+                return Color.TEAL;
+            case DARK_BLUE:
+                return Color.NAVY;
+            case DARK_GRAY:
+                return Color.GRAY;
+            case DARK_GREEN:
+                return Color.GREEN;
+            case DARK_PURPLE:
+                return Color.PURPLE;
+            case DARK_RED:
+                return Color.MAROON;
+            case GOLD:
+                return Color.ORANGE;
+            case GRAY:
+                return Color.GRAY;
+            case GREEN:
+                return Color.LIME;
+            case LIGHT_PURPLE:
+                return Color.FUCHSIA;
+            case RED:
+                return Color.RED;
+            case YELLOW:
+                return Color.YELLOW;
+            case WHITE:
+                return Color.WHITE;
+            default:
+                return Color.WHITE;
+        }
+    }
+
+    /**
+     * Formats a potion effect into what it would normally be.
+     *
+     * @param effect Effect to pretty.
+     * @return Normal-looking potion effect name.
+     */
+    String potionEffect(PotionEffect effect) {
+        return effects.get(effect.getType()) + " " + quickNumerals(effect.getAmplifier() + 1);
+    }
+
+    /**
+     * Returns the numerals of 1 to 10 quickly.
+     *
+     * @param number The number to convert.
+     * @return The conversion.
+     */
+    private String quickNumerals(int number) {
+        switch (number) {
+            case 10:
+                return "X";
+            case 9:
+                return "IX";
+            case 8:
+                return "VIII";
+            case 7:
+                return "VII";
+            case 6:
+                return "VI";
+            case 5:
+                return "V";
+            case 4:
+                return "IV";
+            case 3:
+                return "III";
+            case 2:
+                return "II";
+            case 1:
+                return "II";
+            default:
+                return "X+";
+        }
     }
 }
