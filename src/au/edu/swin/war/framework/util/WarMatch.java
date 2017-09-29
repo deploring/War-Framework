@@ -102,7 +102,7 @@ public abstract class WarMatch extends WarModule {
      */
     public boolean canInteract(Entity pl, boolean adminBypass) {
         WarPlayer wp = main().getWarPlayer(pl.getUniqueId());
-        return wp == null || (wp.isPlaying() || adminBypass && pl.hasPermission("war.admin"));
+        return wp == null || (wp.isPlaying() || adminBypass && main().plugin().hasPermission(pl, "war.admin"));
     }
 
     /**
