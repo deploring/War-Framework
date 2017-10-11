@@ -209,6 +209,7 @@ public abstract class WarMap implements Listener {
      */
     protected void setAllowBuild(boolean blockBreak, boolean blockPlace) {
         attributes.put("blockBreak", blockBreak);
+        attributes.put("blockExplode", blockBreak);
         attributes.put("blockPlace", blockPlace);
     }
 
