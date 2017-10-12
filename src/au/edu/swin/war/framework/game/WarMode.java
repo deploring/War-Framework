@@ -582,7 +582,6 @@ public abstract class WarMode implements Listener {
         spec.removeEntry(pl.getName()); // Removes the player from the spectator team. (Spigot)
         team.getBukkitTeam().addEntry(pl.getName()); // Assigns the player to the team's Spigot team. (Spigot)
         map().applyInv(dp); // Applies the map's inventory to the player.
-        OnePointNinePVP(dp.getPlayer().getInventory()); // Apply 1.9 pvp attributes to the items.
 
         TextComponent comp = new TextComponent("You have joined the ");
         comp.addExtra(team.getHoverInformation());
@@ -632,30 +631,5 @@ public abstract class WarMode implements Listener {
     protected SerializedLocation randomSpawnFrom(List<SerializedLocation> array) {
         Random picker = new Random();
         return array.get(picker.nextInt(array.size()));
-    }
-
-    /**
-     * Converts all items in an inventory to have 16 attack speed.
-     *
-     * @param inv Inventory to modify.
-     */
-    private void OnePointNinePVP(PlayerInventory inv) {
-        for (int i = 0; i < inv.getSize(); i++)
-            if (inv.getItem(i) != null) {
-                if (inv.getItem(i).getType().getMaxDurability() == 0) continue; // Only modify things that can have an attack speed, i.e. durable weapons
-                net.minecraft.server.v1_12_R1.ItemStack item = CraftItemStack.asNMSCopy(inv.getItem(i));
-                NBTTagCompound compound = item.hasTag() ? item.getTag() : new NBTTagCompound();
-                if (compound.hasKey("gadget")) continue; // Peace out, we don't want to modify gadgets.
-                NBTTagList modifiers = new NBTTagList();
-                NBTTagCompound speed = new NBTTagCompound();
-                speed.set("AttributeName", new NBTTagString("generic.attackSpeed"));
-                speed.set("Name", new NBTTagString("generic.attackSpeed"));
-                speed.set("Amount", new NBTTagFloat(16.0f)); // 1.9 attack speed!
-                speed.set("Operation", new NBTTagInt(0));
-                modifiers.add(speed);
-                compound.set("AttributeModifiers", modifiers);
-                item.setTag(compound);
-                inv.setItem(i, CraftItemStack.asBukkitCopy(item));
-            }
     }
 }
