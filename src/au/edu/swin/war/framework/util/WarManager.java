@@ -9,6 +9,7 @@ import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;
+import java.util.Random;
 import java.util.UUID;
 
 /**
@@ -33,6 +34,8 @@ public abstract class WarManager {
     private final StringUtility strutil; // An instance of the string utility.
     private final WorldUtility wrldutil; // An instance of the world utility.
 
+    public final Random rng; // A random number generator.
+
     // Ensure to include a field containing the match manager!
     // Ensure to include a field containing the cache!
     // Extend the abstracted methods provided to do this!
@@ -49,6 +52,7 @@ public abstract class WarManager {
         this.itemutil = new ItemUtility(this);
         this.strutil = new StringUtility(this);
         this.wrldutil = new WorldUtility(this);
+        this.rng = new Random();
     }
 
     /**

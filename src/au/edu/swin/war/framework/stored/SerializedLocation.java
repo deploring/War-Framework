@@ -23,7 +23,6 @@ import org.bukkit.World;
  */
 public class SerializedLocation {
 
-    /* Getters and setters are not required for these variables. */
     private final double x;
     private final double y;
     private final double z;
@@ -83,5 +82,13 @@ public class SerializedLocation {
 
     public double z() {
         return z;
+    }
+
+    public float yaw() {
+        return yaw;
+    }
+
+    public float pitch() {
+        return pitch;
     }
 }
