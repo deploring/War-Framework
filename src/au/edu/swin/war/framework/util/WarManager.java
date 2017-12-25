@@ -205,4 +205,13 @@ public abstract class WarManager {
         for (WarPlayer online : getWarPlayers().values())
             online.getPlayer().spigot().sendMessage(comp);
     }
+
+    /**
+     * A method that should be implemented to retrieve predefined
+     * messages from a configuration, replacing values in them as
+     * it goes.
+     * @param key Message key.
+     * @param replacements Replacement phrases. (converted to strings)
+     */
+    public abstract String _(String key, Object... replacements);
 }

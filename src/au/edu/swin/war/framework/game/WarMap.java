@@ -555,7 +555,7 @@ public abstract class WarMap implements Listener {
         if (!(Boolean) attributes.get("blockBreak")) {
             if (main.match().isAffected(event.getPlayer())) {
                 event.setCancelled(true);
-                main.warn(event.getPlayer(), "You can't build on this map.");
+                main.warn(event.getPlayer(), main._("guard.building"));
             }
         }
     }
@@ -572,7 +572,7 @@ public abstract class WarMap implements Listener {
         if (!(Boolean) attributes.get("blockPlace")) {
             if (main.match().isAffected(event.getPlayer())) {
                 event.setCancelled(true);
-                main.warn(event.getPlayer(), "You can't build on this map.");
+                main.warn(event.getPlayer(), main._("guard.building"));
             }
         } else if (attributes.containsKey("boundary")) {
             Location placed = event.getBlock().getLocation();
@@ -580,7 +580,7 @@ public abstract class WarMap implements Listener {
             SerializedLocation tr = (SerializedLocation) attributes.get("topRight");
             if (main.match().isAffected(event.getPlayer()) && (placed.getX() < bl.x() || placed.getZ() < bl.z() || placed.getX() > tr.x() || placed.getZ() > tr.z())) {
                 event.setCancelled(true);
-                main.warn(event.getPlayer(), "Build inside the map border!");
+                main.warn(event.getPlayer(), main._("guard.border"));
             }
         } else if (attributes.containsKey("plateau")) {
             int plateauY = (int) attributes.get("plateau");
@@ -588,13 +588,13 @@ public abstract class WarMap implements Listener {
             equiv.setY(plateauY);
             if (equiv.getBlock().getType() != Material.BEDROCK) {
                 event.setCancelled(true);
-                main.warn(event.getPlayer(), "Build inside the map border!");
+                main.warn(event.getPlayer(), main._("guard.border"));
             }
         } else if (attributes.containsKey("buildHeight")) {
             int buildHeight = (int) attributes.get("buildHeight");
             if (event.getBlock().getY() > buildHeight) {
                 event.setCancelled(true);
-                main.warn(event.getPlayer(), "You can't build any higher.");
+                main.warn(event.getPlayer(), main._("guard.highest"));
             }
         }
     }
